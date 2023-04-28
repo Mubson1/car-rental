@@ -226,6 +226,122 @@ namespace hajur_ko_car_rental.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("hajur_ko_car_rental.Models.Cars", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CarName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FuelType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<float>("Mileage")
+                        .HasColumnType("real");
+
+                    b.Property<float>("RatePerDay")
+                        .HasColumnType("real");
+
+                    b.Property<string>("SafetyRating")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.DamagePayment", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("CheckedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DamageRecordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentType")
+                        .HasColumnType("text");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("CheckedBy");
+
+                    b.HasIndex("DamageRecordId");
+
+                    b.ToTable("DamagePayment");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.DamageRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CarId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CheckedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DamageDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RentalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("CheckedBy");
+
+                    b.HasIndex("RentalId");
+
+                    b.ToTable("DamageRecord");
+                });
+
             modelBuilder.Entity("hajur_ko_car_rental.Models.DocumentType", b =>
                 {
                     b.Property<int>("Id")
@@ -241,6 +357,113 @@ namespace hajur_ko_car_rental.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DocumentType");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.RentalHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AuthorizedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CarId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NotificationStatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RequestStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorizedBy");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("RentalHistory");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.RentalPayment", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("CheckedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentType")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RentalId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("CheckedBy");
+
+                    b.HasIndex("RentalId");
+
+                    b.ToTable("RentalPayment");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.SpecialOffers", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CarId")
+                        .HasColumnType("uuid");
+
+                    b.Property<float>("Discount")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OfferDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OfferTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.ToTable("SpecialOffers");
                 });
 
             modelBuilder.Entity("hajur_ko_car_rental.Models.ApplicationUser", b =>
@@ -318,6 +541,97 @@ namespace hajur_ko_car_rental.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.DamagePayment", b =>
+                {
+                    b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Staff")
+                        .WithMany()
+                        .HasForeignKey("CheckedBy");
+
+                    b.HasOne("hajur_ko_car_rental.Models.DamageRecord", "DamageRecord")
+                        .WithMany()
+                        .HasForeignKey("DamageRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DamageRecord");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.DamageRecord", b =>
+                {
+                    b.HasOne("hajur_ko_car_rental.Models.Cars", "Cars")
+                        .WithMany()
+                        .HasForeignKey("CarId");
+
+                    b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Staff")
+                        .WithMany()
+                        .HasForeignKey("CheckedBy");
+
+                    b.HasOne("hajur_ko_car_rental.Models.RentalHistory", "RentalHistory")
+                        .WithMany()
+                        .HasForeignKey("RentalId");
+
+                    b.Navigation("Cars");
+
+                    b.Navigation("RentalHistory");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.RentalHistory", b =>
+                {
+                    b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Staff")
+                        .WithMany()
+                        .HasForeignKey("AuthorizedBy");
+
+                    b.HasOne("hajur_ko_car_rental.Models.Cars", "Cars")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cars");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.RentalPayment", b =>
+                {
+                    b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Staff")
+                        .WithMany()
+                        .HasForeignKey("CheckedBy");
+
+                    b.HasOne("hajur_ko_car_rental.Models.RentalHistory", "RentalHistory")
+                        .WithMany()
+                        .HasForeignKey("RentalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RentalHistory");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("hajur_ko_car_rental.Models.SpecialOffers", b =>
+                {
+                    b.HasOne("hajur_ko_car_rental.Models.Cars", "Cars")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cars");
                 });
 
             modelBuilder.Entity("hajur_ko_car_rental.Models.ApplicationUser", b =>

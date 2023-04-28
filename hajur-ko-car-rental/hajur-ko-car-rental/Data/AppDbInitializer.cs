@@ -24,21 +24,21 @@ namespace hajur_ko_car_rental.Data
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                var adminName = "admin";
+                var adminName = "admin123";
                 var adminUser = await userManager.FindByNameAsync(adminName);
                 if (adminUser == null)
                 {
                     var newAdminUser = new ApplicationUser
                     {
-                        Name = "App Admin",
+                        Name = "Hajur Ko Admin",
                         UserName = adminName,
-                        Email = "admin@gmail.com",
-                        Address = "Home",
-                        PhoneNumber = "987654321",
+                        Email = "hajurkoadmin@gmail.com",
+                        Address = "Hajur ko Ghar",
+                        PhoneNumber = "9843589652",
                         SecurityStamp = Guid.NewGuid().ToString(),
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newAdminUser, "admin@12");
+                    await userManager.CreateAsync(newAdminUser, "hkcr_admin123");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
@@ -49,15 +49,15 @@ namespace hajur_ko_car_rental.Data
                 {
                     var newStaffUser = new ApplicationUser
                     {
-                        Name = "App Staff",
+                        Name = "Hajur Ko Staff",
                         UserName = staffName,
-                        Email = "staff@gmail.com",
-                        Address = "Staff-Home",
-                        PhoneNumber = "987654322",
+                        Email = "hajurkostaff@gmail.com",
+                        Address = "Hajur ko Staff Ko Ghar",
+                        PhoneNumber = "9898989898",
                         SecurityStamp = Guid.NewGuid().ToString(),
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newStaffUser, "staff@12");
+                    await userManager.CreateAsync(newStaffUser, "hkcr_staff123");
                     await userManager.AddToRoleAsync(newStaffUser, UserRoles.Staff);
                 }
 

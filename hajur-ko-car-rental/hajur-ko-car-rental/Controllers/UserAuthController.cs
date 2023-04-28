@@ -153,7 +153,7 @@ namespace hajur_ko_car_rental.Controllers
             });
         }
 
-        [Authorize(Roles = "Customer,Staff")]
+        //[Authorize(Roles = "Customer,Staff")]
         [Route("change_password")]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO details)
@@ -216,7 +216,7 @@ namespace hajur_ko_car_rental.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("upload_doc")]
         public async Task<IActionResult> UploadDoc([FromForm] UploadDocumentDTO docDto)
         {
