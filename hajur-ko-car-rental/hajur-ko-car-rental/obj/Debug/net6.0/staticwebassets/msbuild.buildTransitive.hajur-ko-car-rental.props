@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\hajur-ko-car-rental.props" />
+</Project>
