@@ -1,0 +1,15 @@
+.breadcrumb_item {
+  a {
+    text-decoration: none;
+    color: teal;
+    line-height: 16px;
+  }
+
+  + {
+    .breadcrumb_item.active {
+      &::before {
+        color: #b5b5b5;
+      }
+    }
+  }
+}

@@ -111,16 +111,13 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddTransient<ImageService>();
 builder.Services.AddTransient<ISpecialOffer, SpecialOfferService>();
 builder.Services.AddTransient<CarService>();
-
-builder.Services.AddTransient<RentalService>();
+builder.Services.AddTransient<DamageRequestService>();
+builder.Services.AddTransient<RentalHistoryService>();
 
 builder.Services.AddTransient<AdminService>();
-builder.Services.AddTransient<DocumentService>();
 builder.Services.AddTransient<UploadDocumentService>();
 builder.Services.AddTransient<RequestRentService>();
-
-
-
+builder.Services.AddTransient<DamagePaymentService>();
 
 
 

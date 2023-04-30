@@ -3,12 +3,16 @@ import "../styles/bookings.css";
 
 import carData from "../assets/dummy-data/booking-cars.js";
 import CarItem from "../components/UI/CarItem";
+import { useGetCars } from "../helper/useCars";
+import { SpinnerComponent } from "../components/reuseable/Spinner";
 
 const Cars = () => {
+  const { data: carLists, isLoading: getCarLoading } = useGetCars();
+  if (getCarLoading) return <SpinnerComponent />;
   return (
     <div className="bookings">
       <div className="booking__wrapper">
-        <h2 className="booking__title">Booking</h2>
+        <h2 className="booking__title">Cars</h2>
 
         <div className="filter__widget-wrapper">
           <div className="filter__widget-01">
@@ -29,7 +33,7 @@ const Cars = () => {
         </div>
 
         <div className="booking__car-list">
-          {carData?.map((item) => (
+          {carLists?.data?.cars?.map((item) => (
             <CarItem item={item} key={item.id} />
           ))}
         </div>

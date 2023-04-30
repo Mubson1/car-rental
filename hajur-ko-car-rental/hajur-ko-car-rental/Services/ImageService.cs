@@ -6,6 +6,7 @@ namespace hajur_ko_car_rental.Services
 {
     public class ImageService
     {
+
         public bool IsImage(IFormFile file)
         {
             var allowedTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
@@ -14,8 +15,8 @@ namespace hajur_ko_car_rental.Services
 
         public bool IsDoc(IFormFile file)
         {
-            var allowedTypes = new[] { "application/pdf", "image/png" };
-            return allowedTypes.Contains(file.ContentType); 
+            var allowedTypes = new[] { "application/pdf", "image/png", };
+            return allowedTypes.Contains(file.ContentType);
         }
 
         Account account;
@@ -27,38 +28,41 @@ namespace hajur_ko_car_rental.Services
             var apiKey = "259659959121485";
             var apiSecret = "TKwqqq5i3iAIu5FEhsXRDTsIzUI";
 
-            account = new Account (cloudName, apiKey, apiSecret );
+            account = new Account { Cloud = cloudName, ApiKey = apiKey, ApiSecret = apiSecret };
             cloudinary = new Cloudinary(account);
         }
 
         public async Task<string> UploadImage(IFormFile formFile, bool isUser = true)
         {
+
             initCloudinary();
-            //converting IFormFile to stream using MemoryStream()
-            var fileStream = new MemoryStream();
-            await formFile.CopyToAsync(fileStream);
-            fileStream.Position = 0;
+            // Convert the IFormFile to a Stream
+            var stream = new MemoryStream();
+            await formFile.CopyToAsync(stream);
+            stream.Position = 0;
 
             var uploadParams = new ImageUploadParams()
             {
-                File = new FileDescription(formFile.FileName, fileStream),
-                PublicId = $"hajur-ko-car-rental/{(isUser ? "user_docs" : "cars")}"
+                File = new FileDescription(formFile.FileName, stream),
+                PublicId = $"hajur_ko_car_rental/{(isUser ? "user_docs" : "cars")}/{Guid.NewGuid()}",
+                Transformation = new Transformation().FetchFormat("auto")
             };
-
-            var uploadResult = await cloudinary.UploadAsync(uploadParams);
+            var uploadResult = cloudinary.Upload(uploadParams);
             return uploadResult.SecureUrl.ToString();
         }
 
-        public async Task<bool> RemoveImage(string image)
+
+        public async Task<bool> DeleteImage(string imgUrl)
         {
             initCloudinary();
-
-            var remove = await cloudinary.DeleteResourcesAsync(image);
-            var json = remove.JsonObj["deleted_counts"][image]["original"];
-
-            JToken jToken = JToken.Parse(json.ToString());
+            var basicUrl = imgUrl.Split("/hajur_ko_car_rental").Last().Split(".").First();
+            var imgId = $"hajur_ko_car_rental{basicUrl}";
+            var b = await cloudinary.DeleteResourcesAsync(imgId);
+            var c = b.JsonObj["deleted_counts"][imgId]["original"];
+            JToken jToken = JToken.Parse(c.ToString());
+    
             int count = jToken.Value<int>();
-            if(count > 0)
+            if (count > 0)
             {
                 return true;
             }
@@ -66,6 +70,10 @@ namespace hajur_ko_car_rental.Services
             {
                 return false;
             }
+
         }
+
+
+
     }
 }

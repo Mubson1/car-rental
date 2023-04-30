@@ -8,7 +8,7 @@ namespace hajur_ko_car_rental.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -22,7 +22,6 @@ namespace hajur_ko_car_rental.Data
         public DbSet<SpecialOffers> SpecialOffers { get; set; }
         public DbSet<DamageRecord> DamageRecord { get; set; }
         public DbSet<DamagePayment> DamagePayment { get; set; }
-
 
         public DbSet<SpecialOffers> Offers { get; set; }
     }

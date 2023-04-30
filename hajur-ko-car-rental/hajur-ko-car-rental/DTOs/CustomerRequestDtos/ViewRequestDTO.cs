@@ -7,6 +7,7 @@
         public DateTime EndDate { get; set; }
         public string RequestStatus { get; set; }
         public string? NotificationStatus { get; set; }
+        public double TotalCharge { get; set; }
 
         public string CustomerId { get; set; }
 

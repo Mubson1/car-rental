@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace hajur_ko_car_rental.Controllers
 {
     [Route("api/[controller]")]
-    public class SpecialOfferController:ControllerBase
+
+    public class SpecialOfferController : ControllerBase
     {
+
         private readonly ISpecialOffer _publishOffers;
         public SpecialOfferController(ISpecialOffer publishOffers)
         {
@@ -16,7 +18,7 @@ namespace hajur_ko_car_rental.Controllers
 
         [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
-        [Route("add_offer")]
+        [Route("add_new_offer")]
         public async Task<IActionResult> AddOffer([FromBody] AddOfferDTO offer)
         {
             try
@@ -34,6 +36,7 @@ namespace hajur_ko_car_rental.Controllers
                 {
                     message = ex.Message
                 });
+
             }
         }
 
@@ -44,20 +47,25 @@ namespace hajur_ko_car_rental.Controllers
             try
             {
                 var offers = _publishOffers.ViewValidOffers();
-                return Ok(new
-                {
-                    message = "success",
-                    offer = offers
-                });
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        offer = offers
+                    }
+                    );
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = ex.Message
+                    }
+                    );
             }
+
         }
 
         [Route("view_cars")]
@@ -65,22 +73,29 @@ namespace hajur_ko_car_rental.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCarList()
         {
+
             try
             {
                 var carList = _publishOffers.GetCarList();
-                return Ok(new
-                {
-                    message = "success",
-                    cars = carList
-                });
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        cars = carList
+                    }
+                    );
+
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = ex.Message
+                    }
+                    );
             }
+
         }
 
         [Route("get_all_offers")]
@@ -91,23 +106,30 @@ namespace hajur_ko_car_rental.Controllers
             try
             {
                 var offers = _publishOffers.ViewAllOffers();
-                return Ok(new
-                {
-                    message = "success",
-                    offer = offers
-                });
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        offer = offers
+                    }
+                    );
+
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = ex.Message
+                    }
+                    );
             }
+
         }
 
+
         [HttpGet]
-        [Route("offer_details/{Id}")]
+        [Route("offer_detail/{Id}")]
         public async Task<IActionResult> GetOfferById(Guid Id)
         {
             try
@@ -118,19 +140,23 @@ namespace hajur_ko_car_rental.Controllers
                     message = "success",
                     offer = offerDetails
                 });
+
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                  new
+                  {
+                      message = ex.Message
+                  }
+                  );
             }
         }
 
+
         [Authorize(Roles = "Admin,Staff")]
         [HttpPatch]
-        [Route("update_offer")]
+        [Route("change_offer")]
         public async Task<IActionResult> UpdateOffer([FromBody] UpdateOfferDTO offer)
         {
             try
@@ -142,6 +168,7 @@ namespace hajur_ko_car_rental.Controllers
                     offer = updatedOffer
 
                 });
+
             }
             catch (Exception ex)
             {
@@ -151,6 +178,7 @@ namespace hajur_ko_car_rental.Controllers
                 });
             }
         }
+
 
         [Authorize(Roles = "Admin,Staff")]
         [HttpDelete("delete_offer")]
@@ -165,6 +193,7 @@ namespace hajur_ko_car_rental.Controllers
 
                 });
             }
+
             catch (Exception ex)
             {
                 return BadRequest(new

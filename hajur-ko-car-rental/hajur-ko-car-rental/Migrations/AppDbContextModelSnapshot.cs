@@ -281,8 +281,8 @@ namespace hajur_ko_car_rental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("CheckedBy")
                         .HasColumnType("text");
@@ -315,9 +315,6 @@ namespace hajur_ko_car_rental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CarId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CheckedBy")
                         .HasColumnType("text");
 
@@ -331,9 +328,11 @@ namespace hajur_ko_car_rental.Migrations
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.Property<string>("RequestStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasIndex("CarId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CheckedBy");
 
@@ -385,8 +384,14 @@ namespace hajur_ko_car_rental.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("ReturnDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("TotalCharge")
+                        .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
@@ -405,8 +410,8 @@ namespace hajur_ko_car_rental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("CheckedBy")
                         .HasColumnType("text");
@@ -474,6 +479,9 @@ namespace hajur_ko_car_rental.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("DocType")
                         .HasColumnType("integer");
 
@@ -483,9 +491,6 @@ namespace hajur_ko_car_rental.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("UploadTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasIndex("DocType");
 
@@ -562,10 +567,6 @@ namespace hajur_ko_car_rental.Migrations
 
             modelBuilder.Entity("hajur_ko_car_rental.Models.DamageRecord", b =>
                 {
-                    b.HasOne("hajur_ko_car_rental.Models.Cars", "Cars")
-                        .WithMany()
-                        .HasForeignKey("CarId");
-
                     b.HasOne("hajur_ko_car_rental.Models.ApplicationUser", "Staff")
                         .WithMany()
                         .HasForeignKey("CheckedBy");
@@ -573,8 +574,6 @@ namespace hajur_ko_car_rental.Migrations
                     b.HasOne("hajur_ko_car_rental.Models.RentalHistory", "RentalHistory")
                         .WithMany()
                         .HasForeignKey("RentalId");
-
-                    b.Navigation("Cars");
 
                     b.Navigation("RentalHistory");
 

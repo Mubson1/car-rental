@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hajur_ko_car_rental.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -27,7 +27,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         [HttpPost]
-        [Route("add_staff")]
+        [Route("add_new_staff")]
         public async Task<IActionResult> CreateNewStaffMember([FromBody] RegisterStaffDTO registerDto
             //string userName, string email, string password, string role
             )
@@ -50,7 +50,12 @@ namespace hajur_ko_car_rental.Controllers
             }
             try
             {
-                _adminService.ValidateAdmin();
+                if (registerDto.Role == UserRoles.Admin)
+                {
+                    _adminService.ValidateAdmin();
+
+                }
+                var createdAt = DateTime.UtcNow;
 
                 ApplicationUser user = new ApplicationUser
                 {
@@ -60,6 +65,8 @@ namespace hajur_ko_car_rental.Controllers
                     PhoneNumber = registerDto.PhoneNumber,
                     Address = registerDto.Address,
                     Name = registerDto.FullName,
+                    CreatedAt = createdAt,
+
                 };
 
 
@@ -74,19 +81,20 @@ namespace hajur_ko_car_rental.Controllers
 
                 }
                 var addedUser = await _userManager.FindByNameAsync(registerDto.Username);
-                var staffMemberDto = new RegisterStaffOutputDTO
+                var staffMemberDto = new
                 {
-                    Id = addedUser.Id,
+                    id = addedUser.Id,
 
-                    Username = addedUser.UserName,
-                    Email = addedUser.Email,
-                    PhoneNumber = registerDto.PhoneNumber,
-                    Address = registerDto.Address,
-                    FullName = registerDto.FullName,
-                    Role = registerDto.Role
+                    username = addedUser.UserName,
+                    email = addedUser.Email,
+                    phoneNumber = registerDto.PhoneNumber,
+                    address = registerDto.Address,
+                    fullName = registerDto.FullName,
+                    role = registerDto.Role,
+                    createdAt = createdAt.ToShortDateString(),
                 };
 
-                return Ok(new { message = "Registration successful", staffMember = staffMemberDto });
+                return Ok(new { message = "success", staffMember = staffMemberDto });
             }
             catch (Exception ex)
             {
@@ -98,8 +106,8 @@ namespace hajur_ko_car_rental.Controllers
 
         }
         [HttpGet]
-        [Route("get_users")]
-        public async Task<IActionResult> GetUsers()
+        [Route("get_staff_details")]
+        public async Task<IActionResult> GetStaffs()
         {
             var users = _dbContext.ApplicationUsers.ToList();
             var viewUsers = users.Select(user =>
@@ -122,6 +130,93 @@ namespace hajur_ko_car_rental.Controllers
                 }
                 return null;
             }).Where(user => user != null);
+            return Ok(new
+            {
+                message = "success",
+                users = viewUsers
+            });
+        }
+
+        [HttpGet]
+        [Route("get_customer_details")]
+        public async Task<IActionResult> GetCustomers()
+        {
+            var users = _dbContext.ApplicationUsers.ToList();
+            var viewUsers = users.Select(user =>
+            {
+                var result = _userManager.GetRolesAsync(user).Result;
+                var userRole = result == null ? "" : result[0];
+
+                return new
+                {
+                    id = user.Id,
+                    fullName = user.Name,
+                    username = user.UserName,
+
+                    email = user.Email,
+                    phoneNumber = user.PhoneNumber,
+                    address = user.Address,
+                    role = userRole,
+                    documentUrl = user.DocumentUrl,
+                };
+
+            }).Where(user => user != null);
+            return Ok(new
+            {
+                message = "success",
+                users = viewUsers
+            });
+        }
+
+
+        [HttpGet]
+        [Route("get_basic_users")]
+        public async Task<IActionResult> GetUsers(string? role)
+        {
+            var validRoles = new List<String> { UserRoles.Admin, UserRoles.Staff, UserRoles.Customer };
+            if (role != null && !validRoles.Contains(role))
+            {
+                return BadRequest(
+                new
+                {
+                    message = "Inavlid role"
+                });
+            }
+            var users = _dbContext.ApplicationUsers.ToList();
+            var viewUsers = users.Select(user =>
+            {
+                var result = _userManager.GetRolesAsync(user).Result;
+                var userRole = result == null ? "" : result[0];
+                if (userRole != null && userRole == role)
+                {
+                    return new
+                    {
+                        id = user.Id,
+                        fullName = user.Name,
+                        username = user.UserName,
+                        role = userRole
+
+                    };
+                }
+                else
+                {
+                    return new
+                    {
+                        id = user.Id,
+                        fullName = user.Name,
+                        username = user.UserName,
+                        role = userRole!
+
+
+                    };
+                }
+                ;
+            });
+            if (!string.IsNullOrEmpty(role))
+            {
+                viewUsers = viewUsers.Where(user => user.role == role);
+
+            }
             return Ok(new
             {
                 message = "success",
@@ -171,7 +266,7 @@ namespace hajur_ko_car_rental.Controllers
             return Ok(staffMember);
         }
 
-        [HttpPut("update_user")]
+        [HttpPut("update_user_detail")]
         public async Task<IActionResult> UpdateStaffMember([FromBody] UpdateStaffDTO staffUpdateDto)
         {
             try
@@ -184,6 +279,22 @@ namespace hajur_ko_car_rental.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateStaffMember(string id, [FromBody] StaffUpdateDTO staffUpdateDto)
+        //{
+        //    try
+        //    {
+        //        await _adminService.UpdateStaffMember(id, staffUpdateDto);
+        //        var updatedStaffMember = await _adminService.GetStaffMemberById(id);
+        //        var message = "Staff member updated successfully.";
+        //        return Ok(new { message, updatedStaffMember });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStaffMember(string id)
@@ -200,6 +311,7 @@ namespace hajur_ko_car_rental.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
+                //return BadRequest(new { message = "Failed to delete staff" });
             }
 
             return Ok(new { message = "Staff removed successfully" });

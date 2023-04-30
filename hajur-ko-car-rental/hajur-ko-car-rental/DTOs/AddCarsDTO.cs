@@ -1,4 +1,4 @@
-﻿namespace hajur_ko_car_rental.DTOs.UserAuthDtos
+﻿namespace hajur_ko_car_rental.DTOs
 {
     public class AddCarsDTO
     {

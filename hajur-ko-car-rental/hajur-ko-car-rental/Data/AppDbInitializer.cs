@@ -24,7 +24,7 @@ namespace hajur_ko_car_rental.Data
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                var adminName = "admin123";
+                var adminName = "admin";
                 var adminUser = await userManager.FindByNameAsync(adminName);
                 if (adminUser == null)
                 {
@@ -38,7 +38,7 @@ namespace hajur_ko_car_rental.Data
                         SecurityStamp = Guid.NewGuid().ToString(),
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newAdminUser, "hkcr_admin123");
+                    await userManager.CreateAsync(newAdminUser, "admin@12");
                     await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
 
@@ -57,7 +57,7 @@ namespace hajur_ko_car_rental.Data
                         SecurityStamp = Guid.NewGuid().ToString(),
                         EmailConfirmed = true
                     };
-                    await userManager.CreateAsync(newStaffUser, "hkcr_staff123");
+                    await userManager.CreateAsync(newStaffUser, "staff@12");
                     await userManager.AddToRoleAsync(newStaffUser, UserRoles.Staff);
                 }
 
@@ -66,13 +66,14 @@ namespace hajur_ko_car_rental.Data
                 var citizenshipId = 2;
                 var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var docs = context.DocumentType;
-
                 if (docs.FindAsync(licenseId).Result == null)
                 {
                     await docs.AddAsync(new DocumentType
                     {
                         Id = licenseId,
                         Title = "License",
+
+
                     });
                 }
 
@@ -82,6 +83,8 @@ namespace hajur_ko_car_rental.Data
                     {
                         Id = citizenshipId,
                         Title = "Citizenship",
+
+
                     });
                 }
                 context.SaveChanges();

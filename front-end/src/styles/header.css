@@ -42,6 +42,7 @@
 
 .header__middle {
   padding: 20px 0px;
+  background-color: #fff;
 }
 
 .logo h1 a span {
@@ -99,11 +100,43 @@
   color: #fff;
 }
 
+.header__register {
+  background: #fff !important;
+  padding: 6px 20px;
+  border: solid;
+  border-color: #000d6b;
+  border-width: 0.5px;
+  border-radius: 5px;
+  margin-left: 12px;
+}
+
+.header__register a {
+  display: flex;
+  align-items: center;
+  column-gap: 0.4rem;
+  text-decoration: none;
+  color: #000d6b;
+  justify-content: end;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.header__register a:hover {
+  color: #000d6b;
+}
+
 /* ================ main navbar styles =========== */
 
 .main__navbar {
   padding: 15px 0px;
-  background: #000d6b;
+  position: absolute;
+  top: 80px;
+  z-index: 99;
+  width: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
 
 .mobile__menu i {
@@ -123,9 +156,12 @@
 }
 
 .nav__item {
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
   transition: 0.3s;
+  margin-right: 24px;
+  font-weight: 500;
+  font-size: 20px;
 }
 
 .nav__item:hover {
@@ -159,6 +195,12 @@
 
 .nav__active {
   color: #f9a826;
+}
+
+.profile__box {
+  border-radius: 8px;
+  padding: 10px 8px;
+  box-shadow: 4px 4px 4px 4px #0000002c;
 }
 
 @media only screen and (max-width: 768px) {

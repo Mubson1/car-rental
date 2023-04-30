@@ -16,8 +16,39 @@ namespace hajur_ko_car_rental.Services
             _dbContext = dbContext;
         }
 
-        public ViewRequestDTO MakeRequest(MakeRequestDTO dto)
+        public async Task<ViewRequestDTO> MakeRequest(MakeRequestDTO dto)
         {
+            var customerId = dto.CustomerId;
+            var prevCustomer = _dbContext.ApplicationUsers.FirstOrDefault(customer => customer.Id == customerId);
+            if (prevCustomer == null)
+            {
+                throw new Exception("Invalid customer id.");
+            }
+            if (string.IsNullOrEmpty(prevCustomer.DocumentUrl))
+            {
+                throw new Exception("You can't make request without uploading your document.");
+            }
+
+            var carId = dto.CarId;
+            var prevCar = _dbContext.Cars.FirstOrDefault(car => car.Id == carId);
+            if (prevCar == null)
+            {
+                throw new Exception("Invalid car id.");
+            }
+
+            var prevReq = _dbContext.RentalHistory.Where(rh => rh.CustomerId == dto.CustomerId && rh.CarId == dto.CarId && rh.RequestStatus == RequestStatus.Pending).FirstOrDefault();
+            if (prevReq != null)
+            {
+                throw new Exception("Your previous request for this car is pending. You can't make another request for this car.");
+
+            }
+
+            if (prevCar.Status != CarStatus.Available)
+            {
+                throw new Exception("The car is currently unavailable for rent");
+            }
+
+
             var startDate = DateTime.Parse(dto.StartDate).Date;
             var endDate = DateTime.Parse(dto.EndDate).Date;
             if (startDate < DateTime.Now.Date)
@@ -30,25 +61,42 @@ namespace hajur_ko_car_rental.Services
                 throw new Exception("End date should be after the start date.");
             }
 
-            var carId = dto.CarId;
+
+            var totalDays = (endDate - startDate).TotalDays;
+            var charge = (totalDays * prevCar.RatePerDay);
+            var discount = await GetTotalDiscount(new CheckDiscountDTO
+            {
+                CarId = carId,
+                CustomerId = customerId,
+            });
+
+            var totalCharge = (int)(charge - ((discount / 100) * charge));
+            var historyId = Guid.NewGuid();
             var request = new RentalHistory
             {
-                Id = Guid.NewGuid(),
+                Id = historyId,
                 CarId = carId,
                 CustomerId = dto.CustomerId,
                 StartDate = startDate,
                 EndDate = endDate,
+                TotalCharge = totalCharge,
                 RequestStatus = RequestStatus.Pending,
             };
+
             _dbContext.RentalHistory.Add(request);
+            //prevCar.Status = CarStatus.Unavailable;
+            _dbContext.Cars.Update(prevCar);
             _dbContext.SaveChanges();
+
+
             var viewRequest = new ViewRequestDTO
             {
-                Id = carId,
+                Id = historyId,
                 CustomerId = request.CustomerId,
                 CarId = request.CarId,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
+                TotalCharge = totalCharge,
 
                 RequestStatus = request.RequestStatus,
                 CheckedBy = request.AuthorizedBy,
@@ -81,5 +129,38 @@ namespace hajur_ko_car_rental.Services
 
             return totalDiscount;
         }
+
+
+        public async Task<RentalHistory> CancelReq(Guid id)
+        {
+            var rentalHistory = _dbContext.RentalHistory.FirstOrDefault(x => x.Id == id &&
+             x.RequestStatus == RequestStatus.Pending || x.RequestStatus == RequestStatus.Approved);
+
+            if (rentalHistory == null)
+            {
+                throw new Exception("Invalid id!");
+            }
+
+            rentalHistory.RequestStatus = RequestStatus.Cancelled;
+            if (rentalHistory.RequestStatus == RequestStatus.Approved)
+            {
+                var payment = _dbContext.RentalPayment.Where(rp => rp.RentalId == rentalHistory.Id).FirstOrDefault();
+                payment.PaymentStatus = PaymentStatus.Cancelled;
+            }
+            _dbContext.RentalHistory.Update(rentalHistory);
+
+            var prevCar = _dbContext.Cars.Find(rentalHistory.CarId);
+            if (prevCar != null)
+            {
+                prevCar.Status = CarStatus.Available;
+                _dbContext.Cars.Update(prevCar);
+
+            }
+
+            _dbContext.SaveChanges();
+
+            return rentalHistory;
+        }
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using hajur_ko_car_rental.DTOs.UserAuthDtos;
-using hajur_ko_car_rental.DTOs;
+﻿using hajur_ko_car_rental.DTOs;
 using hajur_ko_car_rental.Models;
 
 namespace hajur_ko_car_rental.Interface

@@ -9,22 +9,31 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using hajur_ko_car_rental.Data;
 
 namespace hajur_ko_car_rental.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserAuthController: ControllerBase
+
+    public class UserAuthController : ControllerBase
+
     {
         private readonly UserManager<IdentityUser> _userManager;
+
         private readonly SignInManager<IdentityUser> _signInManager;
+
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly AppDbContext _dbContext;
+
         private readonly ImageService _imgService;
         private readonly UploadDocumentService _docUploadService;
         private readonly IConfiguration _configuration;
 
+
         public UserAuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager,
-            ImageService imageService, IConfiguration configuration, UploadDocumentService docUploadService
+            ImageService imageService, IConfiguration configuration, UploadDocumentService docUploadService, AppDbContext appDbContext
             )
         {
             _userManager = userManager;
@@ -33,11 +42,16 @@ namespace hajur_ko_car_rental.Controllers
             _imgService = imageService;
             _configuration = configuration;
             _docUploadService = docUploadService;
+            _dbContext = appDbContext;
+
         }
+
 
         [HttpPost("register_customer")]
         public async Task<IActionResult> Register([FromForm] RegisterDTO model)
         {
+
+
             var prevUser = await _userManager.FindByNameAsync(model.Username);
             if (prevUser != null)
             {
@@ -56,8 +70,8 @@ namespace hajur_ko_car_rental.Controllers
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 Name = model.FullName,
+                CreatedAt = DateTime.UtcNow,
             };
-
             var document = model.Document;
             if (document != null)
             {
@@ -65,6 +79,7 @@ namespace hajur_ko_car_rental.Controllers
                 if (imageCheck != null)
                 {
                     return imageCheck;
+
                 }
                 var docType = model.DocType;
                 if (string.IsNullOrEmpty(docType))
@@ -77,19 +92,24 @@ namespace hajur_ko_car_rental.Controllers
                 if (!validDoctypes.Contains(docType))
                 {
                     return BadRequest(new { message = "Invalid DocType." });
+
                 }
+
 
                 try
                 {
                     var imgUrl = await _imgService.UploadImage(document);
                     user.DocumentUrl = imgUrl;
                     user.DocType = validDoctypes.IndexOf(docType) + 1;
+
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.Message);
                 }
+
             }
+
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -99,11 +119,31 @@ namespace hajur_ko_car_rental.Controllers
             else if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.Customer);
+
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            return Ok(new { message = "Registration successful" });
+            var users = _dbContext.ApplicationUsers.Where(user => user.UserName == model.Username).FirstOrDefault();
+            var token = GenerateJwtToken(user);
+            var role = _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                message = "success",
+                user =
+                new
+                {
+                    id = user.Id,
+                    username = user.UserName,
+                    email = user.Email,
+                    role = role.Result[0],
+                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
+
+                },
+                token = token
+            });
+
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -119,14 +159,17 @@ namespace hajur_ko_car_rental.Controllers
             {
                 Response.StatusCode = 415; // Unsupported Media type
                 return Content("File type not supported");
+
             }
             return null;
         }
+
 
         [Route("login")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
+
             var result =
                 await _signInManager.PasswordSignInAsync(model.Username, model.Password, false,
                     lockoutOnFailure: false);
@@ -135,25 +178,30 @@ namespace hajur_ko_car_rental.Controllers
             {
                 return Unauthorized(new { message = "Invalid username or password" });
             }
-            var user = await _userManager.FindByNameAsync(model.Username);
+            var user = _dbContext.ApplicationUsers.Where(user => user.UserName == model.Username).FirstOrDefault();
             var token = GenerateJwtToken(user);
             var role = _userManager.GetRolesAsync(user);
+            //_roleManager.
 
             return Ok(new
             {
                 message = "success",
-                user = new
+                user =
+                new
                 {
                     id = user.Id,
                     username = user.UserName,
                     email = user.Email,
-                    role = role.Result[0]
+                    role = role.Result[0],
+                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
+
                 },
                 token = token
             });
+
         }
 
-        //[Authorize(Roles = "Customer,Staff")]
+        [Authorize]
         [Route("change_password")]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO details)
@@ -170,17 +218,22 @@ namespace hajur_ko_car_rental.Controllers
                 if (a.Succeeded)
                 {
                     return Ok(new { message = "Password changed successfully." });
+
                 }
                 else
                 {
                     return BadRequest(a);
                 }
+
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
+            //}
+
         }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> LogOut()
@@ -190,9 +243,11 @@ namespace hajur_ko_car_rental.Controllers
             {
                 message = "success"
             });
+
         }
 
-        private string GenerateJwtToken(IdentityUser user)
+
+        private string GenerateJwtToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -216,8 +271,8 @@ namespace hajur_ko_car_rental.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        //[Authorize]
-        [HttpPost("upload_doc")]
+        [Authorize]
+        [HttpPost("upload_document")]
         public async Task<IActionResult> UploadDoc([FromForm] UploadDocumentDTO docDto)
         {
             try
@@ -226,20 +281,41 @@ namespace hajur_ko_car_rental.Controllers
                 if (imageCheck != null)
                 {
                     return imageCheck;
+
                 }
 
                 var docUrl = await _docUploadService.UploadDoc(docDto);
 
+                var user = _dbContext.ApplicationUsers.Where(user => user.Id == docDto.UserId).FirstOrDefault();
+                var token = GenerateJwtToken(user);
+                var role = _userManager.GetRolesAsync(user);
+                //_roleManager.
+
                 return Ok(new
                 {
                     message = "success",
-                    uploadedDoc = docUrl
+                    user =
+                    new
+                    {
+                        id = user.Id,
+                        username = user.UserName,
+                        email = user.Email,
+                        role = role.Result[0],
+                        hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
+
+                    },
+                    token = token
                 });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
+
         }
+
+
+
+
     }
 }

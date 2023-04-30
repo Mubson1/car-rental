@@ -7,21 +7,87 @@ import SellCar from "../pages/SellCar";
 import Settings from "../pages/Settings";
 import Cars from "../pages/Cars";
 import Staffs from "../pages/Staffs";
+import Login from "../pages/login/Login";
+import useToken from "../axios/useToken";
 
 const Router = () => {
+  const ProtectedRoute = ({ children }) => {
+    const [token, setToken] = useToken();
+
+    let admin = false;
+    if (JSON.parse(token)?.user?.role === "Admin") {
+      admin = true;
+    }
+
+    if (!admin) return <Navigate to="/login" />;
+
+    return children;
+  };
   return (
     <Routes>
       <Route
         path="/"
-        element={<Navigate to="/dashboard" element={<Dashboard />} />}
+        element={
+          <Navigate
+            to="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        }
       />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/cars" element={<Cars />} />
-      <Route path="/staffs" element={<Staffs />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cars"
+        element={
+          <ProtectedRoute>
+            <Cars />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staffs"
+        element={
+          <ProtectedRoute>
+            <Staffs />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/bookings" element={<Bookings />} />
-      <Route path="/sell-car" element={<SellCar />} />
-      <Route path="/settings" element={<Settings />} />
+      <Route
+        path="/bookings"
+        element={
+          <ProtectedRoute>
+            <Bookings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sell-car"
+        element={
+          <ProtectedRoute>
+            <SellCar />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 };

@@ -1,5 +1,4 @@
 ﻿using hajur_ko_car_rental.Data;
-using hajur_ko_car_rental.DTOs.UserAuthDtos;
 using hajur_ko_car_rental.DTOs;
 using hajur_ko_car_rental.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ namespace hajur_ko_car_rental.Services
     {
         private readonly AppDbContext _dbContext;
         private readonly ImageService _imgService;
-
         public CarService(AppDbContext dbContext, ImageService imgService)
         {
             _dbContext = dbContext;
@@ -70,7 +68,7 @@ namespace hajur_ko_car_rental.Services
 
             _dbContext.Cars.Remove(car);
 
-            var success = await _imgService.RemoveImage(car.ImageUrl);
+            var success = await _imgService.DeleteImage(car.ImageUrl);
             if (success)
             {
                 _dbContext.SaveChanges();
@@ -86,7 +84,7 @@ namespace hajur_ko_car_rental.Services
             {
                 throw new Exception("Invalid fuel type!");
             }
-            var validRatings = new List<String> { "A", "B", "C", "D", "E" };
+            var validRatings = new List<String> { "1", "2", "3", "4", "5" };
 
             if (!validRatings.Contains(safetyRating))
             {
@@ -123,7 +121,7 @@ namespace hajur_ko_car_rental.Services
                 ImageUrl = car.Image == null ? prevCar.ImageUrl : _imgService.UploadImage(car.Image, isUser: false).Result,
             };
 
-            bool isDeleted = await _imgService.RemoveImage(prevCar.ImageUrl);
+            bool isDeleted = await _imgService.DeleteImage(prevCar.ImageUrl);
             if (!isDeleted)
             {
                 throw new Exception("Failed to update the image.");
@@ -140,5 +138,6 @@ namespace hajur_ko_car_rental.Services
         {
             return (_dbContext.Cars?.FirstOrDefault(e => e.Id == id));
         }
+
     }
 }

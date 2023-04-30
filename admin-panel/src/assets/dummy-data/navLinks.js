@@ -17,13 +17,13 @@ const navLinks = [
   {
     path: "/bookings",
     icon: "ri-taxi-line",
-    display: "Booking",
+    display: "Bookings",
   },
-  // {
-  //   path: "/sell-car",
-  //   icon: "ri-shopping-bag-line",
-  //   display: "Sell Cars",
-  // },
+  {
+    path: "/damage-request",
+    icon: "ri-shopping-bag-line",
+    display: "Damage Requests",
+  },
   {
     path: "/settings",
     icon: "ri-settings-2-line",

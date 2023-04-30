@@ -8,7 +8,7 @@ using System.Transactions;
 
 namespace hajur_ko_car_rental.Services
 {
-    public class AdminService: IAdminService
+    public class AdminService : IAdminService
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
@@ -87,9 +87,6 @@ namespace hajur_ko_car_rental.Services
                 staffMember.Name = staffUpdateDto.FullName;
                 staffMember.NormalizedUserName = staffUpdateDto.Username.ToUpper();
 
-
-                // commit the transaction
-
                 if (staffMember != null)
                 {
                     staffMember.Address = staffUpdateDto.Address;
@@ -117,7 +114,6 @@ namespace hajur_ko_car_rental.Services
                             _context.UserRoles.Remove(userRole);
                         }
                         var a = await _userManager.AddToRoleAsync(staffMember, staffUpdateDto.Role);
-                        //await _context.UserRoles.AddAsync(new IdentityUserRole<string> { RoleId = role.Id, UserId = staffMember.Id });
                     }
                 }
 

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace hajur_ko_car_rental.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class addednewattribute : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,7 +78,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,7 +101,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.CarId,
                         principalTable: "Cars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,7 +111,7 @@ namespace hajur_ko_car_rental.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     Discriminator = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    UploadTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Address = table.Column<string>(type: "text", nullable: true),
                     DocumentUrl = table.Column<string>(type: "text", nullable: true),
                     DocType = table.Column<int>(type: "integer", nullable: true),
@@ -178,7 +178,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,13 +196,13 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +222,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,6 +234,8 @@ namespace hajur_ko_car_rental.Migrations
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RequestStatus = table.Column<string>(type: "text", nullable: false),
                     NotificationStatus = table.Column<string>(type: "text", nullable: true),
+                    TotalCharge = table.Column<double>(type: "double precision", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CustomerId = table.Column<string>(type: "text", nullable: false),
                     AuthorizedBy = table.Column<string>(type: "text", nullable: true),
                     CarId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -251,13 +253,13 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.CustomerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RentalHistory_Cars_CarId",
                         column: x => x.CarId,
                         principalTable: "Cars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -267,7 +269,7 @@ namespace hajur_ko_car_rental.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DamageDescription = table.Column<string>(type: "text", nullable: false),
                     ReportDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CarId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RequestStatus = table.Column<string>(type: "text", nullable: false),
                     RentalId = table.Column<Guid>(type: "uuid", nullable: true),
                     CheckedBy = table.Column<string>(type: "text", nullable: true)
                 },
@@ -278,11 +280,6 @@ namespace hajur_ko_car_rental.Migrations
                         name: "FK_DamageRecord_AspNetUsers_CheckedBy",
                         column: x => x.CheckedBy,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DamageRecord_Cars_CarId",
-                        column: x => x.CarId,
-                        principalTable: "Cars",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DamageRecord_RentalHistory_RentalId",
@@ -297,7 +294,7 @@ namespace hajur_ko_car_rental.Migrations
                 {
                     PaymentId = table.Column<Guid>(type: "uuid", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
                     PaymentType = table.Column<string>(type: "text", nullable: true),
                     PaymentStatus = table.Column<string>(type: "text", nullable: false),
                     CheckedBy = table.Column<string>(type: "text", nullable: true),
@@ -316,7 +313,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.RentalId,
                         principalTable: "RentalHistory",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -325,7 +322,7 @@ namespace hajur_ko_car_rental.Migrations
                 {
                     PaymentId = table.Column<Guid>(type: "uuid", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
                     PaymentType = table.Column<string>(type: "text", nullable: true),
                     PaymentStatus = table.Column<string>(type: "text", nullable: false),
                     CheckedBy = table.Column<string>(type: "text", nullable: true),
@@ -344,7 +341,7 @@ namespace hajur_ko_car_rental.Migrations
                         column: x => x.DamageRecordId,
                         principalTable: "DamageRecord",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -398,11 +395,6 @@ namespace hajur_ko_car_rental.Migrations
                 name: "IX_DamagePayment_DamageRecordId",
                 table: "DamagePayment",
                 column: "DamageRecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DamageRecord_CarId",
-                table: "DamageRecord",
-                column: "CarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DamageRecord_CheckedBy",

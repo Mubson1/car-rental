@@ -14,6 +14,11 @@ namespace hajur_ko_car_rental.Models
 
         public string? NotificationStatus { get; set; }
 
+        public double TotalCharge { get; set; }
+
+        public DateTime? ReturnDate { get; set; }
+
+
         [ForeignKey("Customer")]
 
         public string CustomerId { get; set; }
@@ -29,5 +34,6 @@ namespace hajur_ko_car_rental.Models
         public Guid CarId { get; set; }
 
         public virtual Cars Cars { get; set; }
+
     }
 }
