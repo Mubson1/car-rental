@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hajur_ko_car_rental.Controllers
 {
-    [Authorize(Roles = "Admin,Staff")]
+    //[Authorize(Roles = "Admin,Staff")]
     [ApiController]
     [Route("api/[controller]")]
     public class RentalPaymentController : ControllerBase
@@ -88,7 +88,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         [HttpPut("confirm_rent_payment")]
-        public async Task<IActionResult> ConfirmPayment(Guid paymentId)
+        public async Task<IActionResult> ConfirmPayment(Guid paymentId, Guid userId)
         {
             var payment = await _dbContext.RentalPayment.FindAsync(paymentId);
 
@@ -127,10 +127,9 @@ namespace hajur_ko_car_rental.Controllers
                     message = "Payment must be marked as 'pending' before it can be confirmed."
                 });
             }
-            var a = User.Identity.Name;
 
             payment.PaymentStatus = PaymentStatus.Paid;
-            payment.CheckedBy = _dbContext.ApplicationUsers.Where(u => a == u.UserName).First().Id;
+            payment.CheckedBy = _dbContext.ApplicationUsers.Where(u => userId.ToString() == u.Id).First().Id;
             rentalHistory.RequestStatus = RequestStatus.Paid;
             payment.PaymentDate = DateTime.UtcNow;
             payment.PaymentType = PaymentType.Offline;

@@ -4,6 +4,7 @@ import {
   useConfirmRequest,
   useDenyRequest,
   useGetRentHistory,
+  useGetRentHistoryById,
 } from "../helper/useRent";
 import axios from "axios";
 import useToken from "../axios/useToken";
@@ -11,11 +12,16 @@ import { Card } from "react-bootstrap";
 import { Wrapper } from "../components/StyledComponents/StaffList";
 import { SpinnerComponent } from "../components/reuseable/Spinner";
 import "../styles/bookings.css";
+import { useLocation } from "react-router-dom";
 
 const Bookings = () => {
   const [token, setToken] = useToken();
 
+  const { state } = useLocation();
+
   const { data: rentDetails, getRentDetailLoading } = useGetRentHistory();
+  const { data: rentDetailById, getRentDetailByIdLoading } =
+    useGetRentHistoryById(state?.id || null);
   const { mutate: confirmRequest, isLoading: confirmRequestLoading } =
     useConfirmRequest();
   const { mutate: denyRequest, isLoading: denyRequestLoading } =
@@ -24,10 +30,16 @@ const Bookings = () => {
   const [selectedRent, setSelectedRent] = useState([]);
 
   useEffect(() => {
-    if (rentDetails) {
+    if (rentDetails && !state?.id) {
       setSelectedRent(rentDetails?.data?.history[0]);
     }
   }, [rentDetails]);
+
+  useEffect(() => {
+    if (rentDetailById && state?.id) {
+      setSelectedRent(rentDetailById?.data?.history);
+    }
+  }, [rentDetailById, state?.id]);
 
   if (getRentDetailLoading) return <SpinnerComponent />;
 
@@ -79,7 +91,7 @@ const Bookings = () => {
           })}
         </div>
 
-        <div className="main-screen">
+        <div className="main-screen h-fit">
           <Card className="w-full px-4 py-4 text-white">
             <div className="d-flex align-items-center ">
               <span style={{ fontSize: 18, fontWeight: "600" }}>
@@ -188,30 +200,44 @@ const Bookings = () => {
                 }}>
                 View Document
               </button>
-              <button
-                onClick={() => confirmRequest(selectedRent?.id)}
-                className="bg-slate-500 py-2 px-4"
-                style={{
-                  border: "none",
-                  borderRadius: 20,
-                  color: "white",
-                  fontWeight: "600",
-                  marginLeft: 16,
-                }}>
-                {confirmRequestLoading ? "Loading..." : "Confirm"}
-              </button>
-              <button
-                onClick={() => denyRequest(selectedRent?.id)}
-                className="bg-red-800 py-2 px-4"
-                style={{
-                  border: "none",
-                  borderRadius: 20,
-                  color: "white",
-                  fontWeight: "600",
-                  marginLeft: 16,
-                }}>
-                {denyRequestLoading ? "Loading..." : "Reject"}
-              </button>
+              {selectedRent?.requestStatus === "Pending" && (
+                <>
+                  <button
+                    onClick={() =>
+                      confirmRequest({
+                        rentalId: selectedRent?.id,
+                        userId: JSON.parse(token)?.user?.id,
+                      })
+                    }
+                    className="bg-slate-500 py-2 px-4"
+                    style={{
+                      border: "none",
+                      borderRadius: 20,
+                      color: "white",
+                      fontWeight: "600",
+                      marginLeft: 16,
+                    }}>
+                    {confirmRequestLoading ? "Loading..." : "Approve"}
+                  </button>
+                  <button
+                    onClick={() =>
+                      denyRequest({
+                        rentalId: selectedRent?.id,
+                        userId: JSON.parse(token)?.user?.id,
+                      })
+                    }
+                    className="bg-red-800 py-2 px-4"
+                    style={{
+                      border: "none",
+                      borderRadius: 20,
+                      color: "white",
+                      fontWeight: "600",
+                      marginLeft: 16,
+                    }}>
+                    {denyRequestLoading ? "Loading..." : "Reject"}
+                  </button>
+                </>
+              )}
             </div>
           </Card>
         </div>

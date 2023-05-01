@@ -3,12 +3,15 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import Dashboard from "../pages/Dashboard";
 import Bookings from "../pages/Bookings";
-import SellCar from "../pages/SellCar";
+import CarsDetail from "../pages/CarsDetail";
 import Settings from "../pages/Settings";
 import Cars from "../pages/Cars";
-import Staffs from "../pages/Staffs";
 import Login from "../pages/login/Login";
 import useToken from "../axios/useToken";
+import Damages from "../pages/Damages";
+import User from "../pages/Users";
+import UserForm from "../pages/UserForm";
+import Payments from "../pages/Payments";
 
 const Router = () => {
   const ProtectedRoute = ({ children }) => {
@@ -55,10 +58,28 @@ const Router = () => {
         }
       />
       <Route
-        path="/staffs"
+        path="/users"
         element={
           <ProtectedRoute>
-            <Staffs />
+            <User />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users/new"
+        element={
+          <ProtectedRoute>
+            <UserForm />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users/edit/:userId"
+        element={
+          <ProtectedRoute>
+            <UserForm />
           </ProtectedRoute>
         }
       />
@@ -72,10 +93,26 @@ const Router = () => {
         }
       />
       <Route
-        path="/sell-car"
+        path="/payments"
         element={
           <ProtectedRoute>
-            <SellCar />
+            <Payments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/damage-request"
+        element={
+          <ProtectedRoute>
+            <Damages />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cars/:id"
+        element={
+          <ProtectedRoute>
+            <CarsDetail />
           </ProtectedRoute>
         }
       />

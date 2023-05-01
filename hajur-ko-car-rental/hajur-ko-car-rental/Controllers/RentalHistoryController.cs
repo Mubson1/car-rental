@@ -74,14 +74,14 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         //[Authorize(Roles = "Admin,Staff")]
-        [HttpPut]
+        [HttpPatch]
         [Route("confirm_request")]
-        public async Task<IActionResult> ApproveRequest(Guid requestId)
+        public async Task<IActionResult> ApproveRequest(Guid requestId, Guid userId)
         {
             try
             {
-                var authUsername = User.Identity.Name!;
-                _rentalService.ApproveRequest(requestId, authUsername);
+                //var authUsername = User.Identity.Name!
+                _rentalService.ApproveRequest(requestId, userId);
                 return Ok(new
                 {
                     message = "success"
@@ -124,13 +124,11 @@ namespace hajur_ko_car_rental.Controllers
         //[Authorize(Roles = "Admin,Staff")]
         [HttpPatch]
         [Route("deny_request")]
-        public async Task<IActionResult> DenyRequest(Guid requestId)
+        public async Task<IActionResult> DenyRequest(Guid requestId, Guid userId)
         {
             try
             {
-                var authUsername = User.Identity.Name!;
-
-                _rentalService.DenyRequest(requestId, authUsername);
+                _rentalService.DenyRequest(requestId, userId);
                 return Ok(new
                 {
                     message = "success"
@@ -168,12 +166,12 @@ namespace hajur_ko_car_rental.Controllers
                 }
 
                 // Check if the user is authorized to update the rental
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return Unauthorized();
-                }
-                var roles = await _userManager.GetRolesAsync(user);
+                //var user = await _userManager.GetUserAsync(User);
+                //if (user == null)
+                //{
+                //    return Unauthorized();
+                //}
+                //var roles = await _userManager.GetRolesAsync(user);
                 rental.ReturnDate = returnDate;
                 rental.RequestStatus = RequestStatus.Returned;
 

@@ -19,7 +19,7 @@
 // export default axiosInstance;
 import axios from "axios";
 
-const token = JSON.parse(localStorage.getItem("token")).token;
+const token = JSON.parse(localStorage.getItem("token"))?.token;
 
 const axiosInstance = axios.create({
   baseURL: "https://localhost:7218",

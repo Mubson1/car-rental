@@ -36,7 +36,6 @@ namespace hajur_ko_car_rental.Services
                 UserName = user.UserName,
                 Email = user.Email,
                 Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(),
-
             };
 
             return staffMember;
@@ -79,7 +78,7 @@ namespace hajur_ko_car_rental.Services
 
             }
 
-            using (var scope = new TransactionScope())
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 staffMember.Email = staffUpdateDto.Email;
                 staffMember.PhoneNumber = staffUpdateDto.PhoneNumber;
@@ -87,6 +86,7 @@ namespace hajur_ko_car_rental.Services
                 staffMember.Name = staffUpdateDto.FullName;
                 staffMember.NormalizedUserName = staffUpdateDto.Username.ToUpper();
 
+                // commit the transaction
                 if (staffMember != null)
                 {
                     staffMember.Address = staffUpdateDto.Address;
@@ -114,6 +114,7 @@ namespace hajur_ko_car_rental.Services
                             _context.UserRoles.Remove(userRole);
                         }
                         var a = await _userManager.AddToRoleAsync(staffMember, staffUpdateDto.Role);
+                        //await _context.UserRoles.AddAsync(new IdentityUserRole<string> { RoleId = role.Id, UserId = staffMember.Id });
                     }
                 }
 
@@ -123,6 +124,8 @@ namespace hajur_ko_car_rental.Services
 
             }
         }
+
+
 
         public async Task<bool> DeleteStaffMember(string id)
         {

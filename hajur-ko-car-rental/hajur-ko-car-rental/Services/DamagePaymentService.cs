@@ -16,7 +16,7 @@ namespace hajur_ko_car_rental.Services
         {
             _dbContext = dbContext;
         }
-        public dynamic CreateNewDamageBill(CreateDamageBillDTO dto, string loggedUsername)
+        public dynamic CreateNewDamageBill(CreateDamageBillDTO dto)
         {
 
             var paymentId = Guid.NewGuid();
@@ -31,13 +31,13 @@ namespace hajur_ko_car_rental.Services
             }
             else
             {
-                var checkedBy = _dbContext.ApplicationUsers.Where(user => user.UserName == loggedUsername).First();
+                var checkedBy = dto.CheckedBy;
                 var dmgPayment = new DamagePayment
                 {
                     PaymentId = paymentId,
                     PaymentStatus = PaymentStatus.Pending,
                     Amount = dto.Amount,
-                    CheckedBy = checkedBy.Id,
+                    CheckedBy = checkedBy.ToString(),
                     DamageRecordId = dto.DamageRecordId
                 };
                 dmgRecord.RequestStatus = RequestStatus.Approved;

@@ -16,7 +16,7 @@ namespace hajur_ko_car_rental.Services
             _userManager = userManager;
         }
 
-        public void ApproveRequest(Guid requestId, string authUsername)
+        public void ApproveRequest(Guid requestId, Guid userId)
         {
             var request = _dbContext.RentalHistory.FirstOrDefault(x => x.Id == requestId && x.RequestStatus == RequestStatus.Pending);
 
@@ -24,13 +24,13 @@ namespace hajur_ko_car_rental.Services
             {
                 throw new Exception("Invalid request");
             }
-            var billStatus = GetBillStatus(request.CustomerId);
-            if (billStatus == BillStatus.Due)
+            //var billStatus = GetBillStatus(request.CustomerId);
+            if (request.RequestStatus == BillStatus.Due)
             {
                 throw new Exception("You can't approve this request as the customer has pending bills.");
 
             }
-            var staff = _dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == authUsername);
+            var staff = _dbContext.ApplicationUsers.FirstOrDefault(x => x.Id == userId.ToString());
             if (staff == null)
             {
                 throw new Exception("Invalid staff id!");
@@ -61,7 +61,7 @@ namespace hajur_ko_car_rental.Services
         }
 
 
-        public void DenyRequest(Guid requestId, string authUsername)
+        public void DenyRequest(Guid requestId, Guid userId)
         {
             var request = _dbContext.RentalHistory.FirstOrDefault(x => x.Id == requestId && x.RequestStatus == RequestStatus.Pending);
 
@@ -69,13 +69,13 @@ namespace hajur_ko_car_rental.Services
             {
                 throw new Exception("Invalid request");
             }
-            var billStatus = GetBillStatus(request.CustomerId);
-            if (billStatus == BillStatus.Paid)
+            //var billStatus = GetBillStatus(request.CustomerId);
+            if (request.RequestStatus == BillStatus.Paid)
             {
                 throw new Exception("You can't deny this request.");
 
             }
-            var staff = _dbContext.ApplicationUsers.FirstOrDefault(x => x.UserName == authUsername);
+            var staff = _dbContext.ApplicationUsers.FirstOrDefault(x => x.Id == userId.ToString());
             if (staff == null)
             {
                 throw new Exception("Invalid staff id!");
@@ -191,10 +191,45 @@ namespace hajur_ko_car_rental.Services
             return BillStatus.Paid;
         }
 
-        public RentalHistory GetRentalHistoryById(Guid Id)
+        public dynamic GetRentalHistoryById(Guid Id)
         {
-            var rentalHistory = _dbContext.RentalHistory.FirstOrDefault(x => x.Id == Id);
-            return rentalHistory;
+            var rh = _dbContext.RentalHistory.FirstOrDefault(x => x.Id == Id);
+            var customer = _dbContext.ApplicationUsers.FirstOrDefault(customer => customer.Id == rh.CustomerId);
+            var staff = _dbContext.ApplicationUsers.FirstOrDefault(staff => staff.Id == rh.AuthorizedBy);
+            var car = _dbContext.Cars.FirstOrDefault(car => car.Id == rh.CarId);
+            return new
+            {
+                id = rh.Id,
+                startDate = rh.StartDate.ToShortDateString(),
+                endDate = rh.EndDate.ToShortDateString(),
+                requestStatus = rh.RequestStatus,
+                totalCharge = rh.TotalCharge,
+                returnDate = rh.ReturnDate,
+                customer = new
+                {
+                    id = customer.Id,
+                    name = customer.Name,
+                    username = customer.UserName,
+                    documentUrl = customer.DocumentUrl,
+                    phoneNumber = customer.PhoneNumber,
+                    email = customer.Email,
+                },
+                authorizedBy = staff == null ? null : new
+                {
+                    id = staff.Id,
+                    name = staff.Name,
+                    username = staff.UserName
+                },
+                car = new
+                {
+                    id = car.Id,
+                    name = car.CarName,
+                    brand = car.Brand,
+                    image = car.ImageUrl
+                }
+
+
+            };
         }
     }
 }

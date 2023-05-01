@@ -20,7 +20,7 @@ namespace hajur_ko_car_rental.Controllers
 
         [HttpPost]
         [Route("post_request")]
-        [Authorize]
+        //[Authorize]
         public IActionResult MakeDamageReq(PostDamageReqDTO damagedReqDto)
         {
             try
@@ -45,7 +45,7 @@ namespace hajur_ko_car_rental.Controllers
 
         [HttpGet]
         [Route("get_all_request")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public IActionResult GetAllRequest(string? requestStatus)
         {
             try

@@ -138,7 +138,12 @@ namespace hajur_ko_car_rental.Controllers
                     username = user.UserName,
                     email = user.Email,
                     role = role.Result[0],
-                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
+                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl),
+                    fullname = user.Name,
+                    address = user.Address,
+                    phoneNumber = user.PhoneNumber,
+                    document = user.DocumentUrl,
+
 
                 },
                 token = token
@@ -193,15 +198,19 @@ namespace hajur_ko_car_rental.Controllers
                     username = user.UserName,
                     email = user.Email,
                     role = role.Result[0],
-                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
+                    hasDocument = !string.IsNullOrEmpty(user.DocumentUrl),
+                    fullName = user.Name,
+                    address = user.Address,
+                    phoneNumber = user.PhoneNumber,
+                    document = user.DocumentUrl,
 
                 },
                 token = token
-            });
+            }); ;
 
         }
 
-        [Authorize]
+        //[Authorize]
         [Route("change_password")]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO details)
@@ -271,7 +280,7 @@ namespace hajur_ko_car_rental.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("upload_document")]
         public async Task<IActionResult> UploadDoc([FromForm] UploadDocumentDTO docDto)
         {
@@ -301,8 +310,11 @@ namespace hajur_ko_car_rental.Controllers
                         username = user.UserName,
                         email = user.Email,
                         role = role.Result[0],
-                        hasDocument = !string.IsNullOrEmpty(user.DocumentUrl)
-
+                        hasDocument = !string.IsNullOrEmpty(user.DocumentUrl),
+                        fullName = user.Name,
+                        address = user.Address,
+                        phoneNumber = user.PhoneNumber,
+                        document = user.DocumentUrl,
                     },
                     token = token
                 });

@@ -17,16 +17,16 @@ namespace hajur_ko_car_rental.Controllers
             _damagePaymentService = damagePaymentService;
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         [Route("create_payment")]
         public async Task<IActionResult> CreateDamagePaymentBill(CreateDamageBillDTO damagePayment)
         {
             try
             {
-                var loggedUsername = User.Identity.Name;
+                //var loggedUsername = User.Identity.Name;
 
-                var paymentRecord = _damagePaymentService.CreateNewDamageBill(damagePayment, loggedUsername);
+                var paymentRecord = _damagePaymentService.CreateNewDamageBill(damagePayment);
                 return Ok(new
                 {
                     message = "success",
@@ -44,7 +44,7 @@ namespace hajur_ko_car_rental.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, Staff")]
+        //[Authorize(Roles = "Admin, Staff")]
         [HttpGet]
         [Route("get_damage_payments")]
         public IActionResult GetAllDamagedPaymentRecords(string? paymentStatus)
@@ -71,7 +71,7 @@ namespace hajur_ko_car_rental.Controllers
 
 
 
-        [Authorize(Roles = "Customer, Staff, Admin")]
+        //[Authorize(Roles = "Customer, Staff, Admin")]
         [Route("get_customer_payment")]
         [HttpGet]
         public IActionResult GetCustomerPaymentById(string customerID)
@@ -98,7 +98,7 @@ namespace hajur_ko_car_rental.Controllers
 
 
         [HttpPut("confirm_damage_payment")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> ConfirmPayment(Guid paymentId)
         {
             try
@@ -120,7 +120,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Staff")]
+        //[Authorize(Roles = "Admin, Staff")]
         [HttpDelete]
         [Route("delete_payment")]
         public void RemoveDamgePaymentRecord([FromBody] Guid id)

@@ -2,7 +2,9 @@
 {
     public class CreateDamageBillDTO
     {
-        public double Amount { get; set; }
+        public float Amount { get; set; }
         public Guid DamageRecordId { get; set; }
+
+        public Guid CheckedBy { get; set; }
     }
 }

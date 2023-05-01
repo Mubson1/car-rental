@@ -113,7 +113,7 @@ builder.Services.AddTransient<ISpecialOffer, SpecialOfferService>();
 builder.Services.AddTransient<CarService>();
 builder.Services.AddTransient<DamageRequestService>();
 builder.Services.AddTransient<RentalHistoryService>();
-
+builder.Services.AddTransient<DocumentService>();
 builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<UploadDocumentService>();
 builder.Services.AddTransient<RequestRentService>();

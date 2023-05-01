@@ -10,14 +10,19 @@ const navLinks = [
     display: "Cars",
   },
   {
-    path: "/staffs",
+    path: "/users",
     icon: "ri-taxi-line",
-    display: "Staffs",
+    display: "Users",
   },
   {
     path: "/bookings",
     icon: "ri-taxi-line",
     display: "Bookings",
+  },
+  {
+    path: "/payments",
+    icon: "ri-taxi-line",
+    display: "Payments",
   },
   {
     path: "/damage-request",
