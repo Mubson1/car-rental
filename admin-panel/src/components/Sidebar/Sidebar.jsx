@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import navLinks from "../../assets/dummy-data/navLinks";
 import "./sidebar.css";
+import useToken from "../../axios/useToken";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [token, setToken] = useToken();
+
+  let value = navLinks;
+  if (JSON.parse(token)?.user?.role === "Staff") {
+    value = navLinks?.filter((nav) => nav.display !== "Users");
+  }
+
   return (
     <div className="sidebar">
       <div className="sidebar__top">
@@ -20,7 +28,7 @@ const Sidebar = () => {
       <div className="sidebar__content">
         <div className="menu">
           <ul className="nav__list">
-            {navLinks.map((item, index) => (
+            {value?.map((item, index) => (
               <li className="nav__item" key={index}>
                 <NavLink
                   to={item.path}
