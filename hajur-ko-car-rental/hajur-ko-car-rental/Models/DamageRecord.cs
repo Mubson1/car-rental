@@ -13,10 +13,8 @@ namespace hajur_ko_car_rental.Models
 
         public DateTime ReportDate { get; set; }
 
-        [ForeignKey("Cars")]
-        public Guid? CarId { get; set; }
+        public string RequestStatus { get; set; }
 
-        public virtual Cars Cars { get; set; }
 
         [ForeignKey("RentalHistory")]
         public Guid? RentalId { get; set; }

@@ -1,5 +1,4 @@
-﻿using hajur_ko_car_rental.DTOs.UserAuthDtos;
-using hajur_ko_car_rental.DTOs;
+﻿using hajur_ko_car_rental.DTOs;
 using hajur_ko_car_rental.Models;
 using hajur_ko_car_rental.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,7 @@ namespace hajur_ko_car_rental.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarController: ControllerBase
+    public class CarController : ControllerBase
     {
         private readonly CarService _carService;
         private readonly ImageService _imgService;
@@ -19,9 +18,10 @@ namespace hajur_ko_car_rental.Controllers
             _imgService = imgService;
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpPost]
-        [Route("add_car")]
+        [Route("add_new_car")]
         public async Task<IActionResult> AddCar([FromForm] AddCarsDTO car)
         {
             var carImage = car.Image;
@@ -39,6 +39,7 @@ namespace hajur_ko_car_rental.Controllers
                     message = "success",
                     car = carView
                 });
+
             }
             catch (Exception ex)
             {
@@ -68,31 +69,36 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         [HttpGet]
-        [Route("get_cars")]
+        [Route("get_allcar_details")]
         public async Task<IActionResult> GetAllCars()
         {
             try
             {
                 var cars = _carService.GetAllCars();
-                return Ok(new
-                {
-                    message = "success",
-                    cars = cars
-                });
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        cars = cars
+                    }
+                    );
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = ex.Message
+                    }
+                    );
             }
         }
 
-        [HttpPatch]
+
+        [HttpPut]
         //[Authorize(Roles ="Admin")]
-        [Route("update_car")]
+        [Route("update_car_details")]
         public async Task<IActionResult> UpdateCar([FromForm] UpdateCarDTO car)
         {
             var carImage = car.Image;
@@ -107,25 +113,31 @@ namespace hajur_ko_car_rental.Controllers
                     if (imageCheck != null)
                     {
                         return imageCheck;
-                    }
-                }
 
+                    }
+
+                }
                 Cars updatedCar = await _carService.UpdateCar(car);
 
-                return Ok(new
-                {
-                    message = "success",
-                    car = updatedCar
-                });
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        car = updatedCar
+                    }
+                    );
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = ex.Message
+                    }
+                    );
             }
+
         }
 
         [HttpGet]
@@ -140,6 +152,7 @@ namespace hajur_ko_car_rental.Controllers
                     message = "success",
                     car = carDetail
                 });
+
             }
             catch (Exception ex)
             {
@@ -147,7 +160,7 @@ namespace hajur_ko_car_rental.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpDelete("remove_car")]
         public async Task<IActionResult> RemoveCar(String id)
         {
@@ -161,11 +174,14 @@ namespace hajur_ko_car_rental.Controllers
                     {
                         message = "Car removed successfully."
                     });
+
                 }
                 else
                 {
                     return BadRequest(new { message = "Failed to delete car image data" });
                 }
+
+
             }
             catch (Exception ex)
             {

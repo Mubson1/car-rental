@@ -34,6 +34,7 @@ namespace hajur_ko_car_rental.Services
             var dbOffers = _dbContext.Offers.ToList();
             var offers = dbOffers.Select(offer => {
                 var carName = _dbContext.Cars.Find(offer.CarId).CarName;
+
                 return new ViewOfferDTO
                 {
                     Id = offer.Id,
@@ -72,6 +73,10 @@ namespace hajur_ko_car_rental.Services
             var offers = _dbContext.Offers.Where(x => currentDate <= x.EndDate.AddDays(1)).ToList().Select(offer =>
             {
                 var carName = _dbContext.Cars.Find(offer.CarId).CarName;
+                var carImage = _dbContext.Cars.Find(offer.CarId).ImageUrl;
+                var rentRate = _dbContext.Cars.Find(offer.CarId).RatePerDay;
+                var carStatus = _dbContext.Cars.Find(offer.CarId).Status;
+
                 return new ViewOfferDTO
                 {
                     Id = offer.Id,
@@ -83,6 +88,9 @@ namespace hajur_ko_car_rental.Services
                     Discount = offer.Discount,
                     StartDate = offer.StartDate.ToShortDateString(),
                     EndDate = offer.EndDate.ToShortDateString(),
+                    CarImage = carImage,
+                    CarStatus = carStatus,
+                    RentRate = rentRate,
                 };
             }
             ).ToList();
@@ -179,12 +187,20 @@ namespace hajur_ko_car_rental.Services
             return car.CarName;
         }
 
-        public SpecialOffers GetOfferByCarId([FromQuery] Guid carId)
+        public List<SpecialOffers> GetOfferByCarId([FromQuery] Guid carId)
         {
             var currentDate = DateTimeOffset.UtcNow;
-            var offer = _dbContext.Offers.Where(offers => offers.CarId == carId && offers.StartDate <= currentDate && currentDate <= offers.EndDate.AddDays(1)).First();
+            List<SpecialOffers> _offerCar;
+            try
+            {
+                var offer = _dbContext.Offers.Where(offers => offers.CarId == carId && offers.StartDate <= currentDate && currentDate <= offers.EndDate.AddDays(1)).ToList();
+                _offerCar = offer;
+            }catch(Exception ex)
+            {
+                _offerCar = null;
 
-            return offer;
+            }
+            return _offerCar;
         }
 
         public ViewOfferDTO UpdateOffer(UpdateOfferDTO offer)

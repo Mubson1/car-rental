@@ -1,8 +1,16 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Container, Row, Col } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+  useNavigation,
+  useRoutes,
+} from "react-router-dom";
+import useToken from "../../helper/useToken";
 import "../../styles/header.css";
+import { usePostLogout } from "../../pages/AuthPages/api";
 
 const navLinks = [
   {
@@ -26,104 +34,127 @@ const navLinks = [
 
 const Header = () => {
   const menuRef = useRef(null);
+  const navigate = useNavigate();
+
+  const [token, setToken] = useToken();
+  const [userDetail, setUserDetail] = useState(JSON.parse(token));
+
+  const [openProfile, setOpenProfile] = useState(false);
+
+  const { mutate: logout, isLoading } = usePostLogout();
 
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <header className="header">
-      {/* ============ header top ============ */}
-      <div className="header__top">
-        <Container>
-          <Row>
-            <Col lg="6" md="6" sm="6">
-              <div className="header__top__left">
-                <span>Need Help?</span>
-                <span className="header__top__help">
-                  <i class="ri-phone-fill"></i> +977-9841000000
-                </span>
-              </div>
-            </Col>
-
-            <Col lg="6" md="6" sm="6">
-              <div className="header__top__right d-flex align-items-center justify-content-end gap-3">
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-login-circle-line"></i> Login
-                </Link>
-
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-user-line"></i> Register
-                </Link>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
-      {/* =============== header middle =========== */}
       <div className="header__middle">
         <Container>
           <Row>
-            <Col lg="4" md="3" sm="4">
+            <Col lg="10" md="9" sm="10">
               <div className="logo">
                 <h1>
                   <Link to="/home" className=" d-flex align-items-center gap-2">
                     <i class="ri-car-line"></i>
-                    <span>
-                      Hajur ko <br /> Car Rental
-                    </span>
+                    <span>Hajur ko Car Rental</span>
                   </Link>
                 </h1>
               </div>
             </Col>
-
-            <Col lg="3" md="3" sm="4">
-              <div className="header__location d-flex align-items-center gap-2">
-                <span>
-                  <i class="ri-earth-line"></i>
-                </span>
-                <div className="header__location-content">
-                  <h4>Nepal</h4>
-                  <h6>Kathmandu, Nepal</h6>
-                </div>
-              </div>
-            </Col>
-
-            <Col lg="3" md="3" sm="4">
-              <div className="header__location d-flex align-items-center gap-2">
-                <span>
-                  <i class="ri-time-line"></i>
-                </span>
-                <div className="header__location-content">
-                  <h4>Sunday to Friday</h4>
-                  <h6>9am - 5pm</h6>
-                </div>
-              </div>
-            </Col>
-
             <Col
               lg="2"
               md="3"
-              sm="0"
-              className=" d-flex align-items-center justify-content-end ">
-              <button className="header__btn btn ">
-                <Link to="/contact">
+              sm="2"
+              className=" d-flex align-items-center justify-content-between">
+              {/* <button
+                className="header__btn"
+                onClick={() => navigate("/contact")}>
+                <Link>
                   <i class="ri-phone-line"></i> Request a call
                 </Link>
-              </button>
+              </button> */}
+              {!userDetail?.token ? (
+                <button
+                  className="header__register"
+                  onClick={() => navigate("/auth")}>
+                  <Link>Register / Login</Link>
+                </button>
+              ) : (
+                <div className="d-flex w-50 justify-content-end">
+                  <div
+                    style={{
+                      backgroundColor: "#f9a826",
+                      height: 40,
+                      textAlign: "center",
+                      width: 40,
+                      borderRadius: 20,
+                      marginRight: 6,
+                      fontSize: 28,
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                    }}>
+                    {userDetail?.user?.username?.charAt(0) || "U"}
+                  </div>
+                  <i
+                    style={{ fontSize: 24, cursor: "pointer" }}
+                    class={
+                      !openProfile
+                        ? "ri-arrow-drop-down-line"
+                        : "ri-arrow-drop-up-line"
+                    }
+                    onClick={() => setOpenProfile(!openProfile)}
+                  />
+                  {openProfile && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 70,
+                        zIndex: 999,
+                        width: 150,
+                        backgroundColor: "white",
+                      }}
+                      className="profile__box">
+                      Username: {userDetail?.user?.username} <hr />
+                      <div className="d-flex flex-column">
+                        <span
+                          onClick={() => navigate("my-requests")}
+                          style={{ cursor: "pointer", marginBottom: 6 }}>
+                          Rent Requests
+                        </span>
+                        <span
+                          onClick={() => navigate("notifications")}
+                          style={{ cursor: "pointer", marginBottom: 6 }}>
+                          Notifications
+                        </span>
+                        <span
+                          onClick={() => navigate("profile")}
+                          style={{ cursor: "pointer", marginBottom: 6 }}>
+                          View Profile
+                        </span>
+                        <span
+                          onClick={handleLogout}
+                          style={{ cursor: "pointer" }}>
+                          Logout
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </Col>
           </Row>
         </Container>
       </div>
 
-      {/* ========== main navigation =========== */}
-
       <div className="main__navbar">
         <Container>
-          <div className="navigation__wrapper d-flex align-items-center justify-content-between">
+          <div className="navigation__wrapper d-flex align-items-center justify-content-end">
             <span className="mobile__menu">
               <i class="ri-menu-line" onClick={toggleMenu}></i>
             </span>
-
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
                 {navLinks.map((item, index) => (
@@ -136,15 +167,6 @@ const Header = () => {
                     {item.display}
                   </NavLink>
                 ))}
-              </div>
-            </div>
-
-            <div className="nav__right">
-              <div className="search__box">
-                <input type="text" placeholder="Search" />
-                <span>
-                  <i class="ri-search-line"></i>
-                </span>
               </div>
             </div>
           </div>

@@ -18,12 +18,12 @@ namespace hajur_ko_car_rental.Services
         public async Task<string> UploadDoc(UploadDocumentDTO dto)
         {
             var userId = dto.UserId;
-            var user = _dbContext.ApplicationUsers.FirstOrDefault(user => user.Id == userId);
+            var user =  _dbContext.ApplicationUsers.FirstOrDefault(user => user.Id == userId);
             if (user == null)
             {
-                throw new Exception("Invalid user id.");
+                throw new Exception( "Invalid user id." );
             }
-            if (!string.IsNullOrEmpty(user.DocumentUrl))
+            if(!string.IsNullOrEmpty(user.DocumentUrl))
             {
                 throw new Exception("User document already exists.");
 
@@ -32,7 +32,7 @@ namespace hajur_ko_car_rental.Services
             var docType = dto.DocType;
             if (!validDoctypes.Contains(docType))
             {
-                throw new Exception("Invalid DocType.");
+                throw new Exception("Invalid DocType." );
 
             }
             var docUrl = await _imgService.UploadImage(dto.Document);
@@ -41,5 +41,6 @@ namespace hajur_ko_car_rental.Services
             _dbContext.SaveChanges();
             return docUrl;
         }
+
     }
 }

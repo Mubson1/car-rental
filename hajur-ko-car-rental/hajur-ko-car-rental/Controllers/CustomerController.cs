@@ -16,7 +16,8 @@ using hajur_ko_car_rental.Models.Static;
 
 namespace hajur_ko_car_rental.Controllers
 {
-    [Authorize]
+
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -24,20 +25,21 @@ namespace hajur_ko_car_rental.Controllers
         private readonly RequestRentService _rentService;
         private readonly UserManager<IdentityUser> _userManager;
 
+
         public CustomerController(RequestRentService rentRequestService, UserManager<IdentityUser> userManager)
         {
             _rentService = rentRequestService;
             _userManager = userManager;
+
         }
 
-        [Authorize]
         [HttpPost]
-        [Route("rent_request")]
+        [Route("post_request")]
         public async Task<IActionResult> MakeRentRequest(MakeRequestDTO makeRequestDto)
         {
             try
             {
-                var request = _rentService.MakeRequest(makeRequestDto);
+                var request = await _rentService.MakeRequest(makeRequestDto);
                 return Ok(new
                 {
                     message = "success",
@@ -48,9 +50,9 @@ namespace hajur_ko_car_rental.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+
         }
 
-        [Authorize]
         [HttpPost]
         [Route("get_discount")]
         public async Task<IActionResult> GetTotalDiscount(CheckDiscountDTO dto)
@@ -73,6 +75,7 @@ namespace hajur_ko_car_rental.Controllers
                 {
                     message = "success",
                     discount = totalDiscount
+
                 });
             }
             catch (Exception ex)
@@ -80,5 +83,35 @@ namespace hajur_ko_car_rental.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        [HttpPost]
+        [Route("cancel_request")]
+
+        public async Task<IActionResult> CancelRequest(Guid id)
+        {
+            try
+            {
+                RentalHistory updatedData = await _rentService.CancelReq(id);
+
+                return Ok(
+                     new
+                     {
+                         message = "success"
+                     }
+                     );
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                     new
+                     {
+                         message = ex.Message
+                     }
+                     );
+            }
+        }
+
     }
 }

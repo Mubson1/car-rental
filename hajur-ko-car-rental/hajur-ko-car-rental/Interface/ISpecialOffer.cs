@@ -8,7 +8,7 @@ namespace hajur_ko_car_rental.Interface
         public ViewOfferDTO AddOffer(AddOfferDTO offer);
         public ViewOfferDTO UpdateOffer(UpdateOfferDTO offer);
         List<ViewOfferDTO> ViewValidOffers();
-        SpecialOffers GetOfferByCarId(Guid id);
+        List<SpecialOffers> GetOfferByCarId(Guid id);
         public List<ViewOfferDTO> ViewAllOffers();
         public List<OfferCarsDTO> GetCarList();
 

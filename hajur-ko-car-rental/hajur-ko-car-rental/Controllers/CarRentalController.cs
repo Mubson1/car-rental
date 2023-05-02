@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hajur_ko_car_rental.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
-    [Route("[controller]")]
-    public class CarRentalController: ControllerBase
+    [Route("api/[controller]")]
+    public class CarRentalController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
 
@@ -16,7 +16,7 @@ namespace hajur_ko_car_rental.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("FrequentlyRentedCars")]
+        [HttpGet("get_frequently_rented_cars")]
         public IActionResult GetFrequentlyRentedCars()
         {
             try
@@ -29,67 +29,130 @@ namespace hajur_ko_car_rental.Controllers
                         CarId = g.Key,
                         RentalCount = g.Count()
                     })
-                    .ToList();
-
-                return Ok(rentedCars);
+                    .ToList().Join(_dbContext.Cars, s => s.CarId, c => c.Id, (o, c) => new { Result = o, Car = c })
+                            .Select(x => new
+                            {
+                                rentalCount = x.Result.RentalCount,
+                                car = new
+                                {
+                                    carId = x.Car.Id,
+                                    name = x.Car.CarName,
+                                    brand = x.Car.Brand,
+                                }
+                            });
+                //var cars = rentedCars.ToList().Select();
+                return Ok(
+                    new
+                    {
+                        message = "success",
+                        rentedCars
+                    }
+                    );
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+
+                    message = ex.Message
+                });
             }
         }
 
-        [HttpGet("NotRentedCars")]
+        [HttpGet("get_not_rented_cars")]
         public IActionResult GetNotRentedCars()
         {
             try
             {
                 var notRentedCars = _dbContext.Cars
                     .Where(c => !_dbContext.RentalHistory.Any(r => r.CarId == c.Id))
-                    .ToList();
+                    .Select(car => new
+                    {
+                        id = car.Id,
+                        name = car.CarName,
+                        brand = car.Brand,
 
-                return Ok(notRentedCars);
+                    });
+
+                return Ok(new
+                {
+                    message = "success",
+                    notRentedCars
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+
+                    message = ex.Message
+                });
             }
         }
 
-        [HttpGet("FrequentCustomers")]
+        [HttpGet("get_regular_customers")]
         public IActionResult GetFrequentCustomers()
         {
             try
             {
-                var frequentCustomers = _dbContext.Users
+                var regularCustomers = _dbContext.ApplicationUsers
                     .Where(u => _dbContext.RentalHistory
-                        .Count(r => r.CustomerId == u.Id && r.StartDate > DateTimeOffset.UtcNow.AddMonths(-1)) > 3)
-                    .ToList();
+                        .Count(r => r.CustomerId == u.Id && r.StartDate > DateTimeOffset.UtcNow.AddMonths(-1)) >= 1)
+                    .Select(customer => new
+                    {
+                        id = customer.Id,
+                        username = customer.UserName,
+                        fullName = customer.Name,
+                        email = customer.Email,
+                        phoneNumber = customer.PhoneNumber,
 
-                return Ok(frequentCustomers);
+                    });
+
+                return Ok(new { message = "success", regularCustomers });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+
+                    message = ex.Message
+                });
             }
         }
 
-        [HttpGet("InactiveCustomers")]
+        [HttpGet("get_inactive_customers")]
         public IActionResult GetInactiveCustomers()
         {
             try
             {
-                var inactiveCustomers = _dbContext.Users
+                var inactiveCustomers = _dbContext.ApplicationUsers
                     .Where(u => !_dbContext.RentalHistory
                         .Any(r => r.CustomerId == u.Id && r.StartDate > DateTimeOffset.UtcNow.AddMonths(-3)))
-                    .ToList();
+                    .Select(customer => new
+                    {
+                        id = customer.Id,
+                        username = customer.UserName,
+                        fullName = customer.Name,
+                        email = customer.Email,
+                        phoneNumber = customer.PhoneNumber,
 
-                return Ok(inactiveCustomers);
+                    });
+
+                return Ok(new
+                {
+                    message = "success",
+                    inactiveCustomers
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+
+                    message = ex.Message
+                });
             }
         }
+
     }
 }

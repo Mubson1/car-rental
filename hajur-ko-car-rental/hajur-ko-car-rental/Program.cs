@@ -111,16 +111,13 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddTransient<ImageService>();
 builder.Services.AddTransient<ISpecialOffer, SpecialOfferService>();
 builder.Services.AddTransient<CarService>();
-
-builder.Services.AddTransient<RentalService>();
-
-builder.Services.AddTransient<AdminService>();
+builder.Services.AddTransient<DamageRequestService>();
+builder.Services.AddTransient<RentalHistoryService>();
 builder.Services.AddTransient<DocumentService>();
+builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<UploadDocumentService>();
 builder.Services.AddTransient<RequestRentService>();
-
-
-
+builder.Services.AddTransient<DamagePaymentService>();
 
 
 
@@ -131,7 +128,7 @@ var app = builder.Build();
 app.UseCors(builder =>
 {
     builder
-    .WithOrigins("https://localhost:3000", "https://localhost:3006")
+    .WithOrigins("https://localhost:3000", "https://localhost:3001")
     .SetIsOriginAllowedToAllowWildcardSubdomains()
     .AllowAnyMethod()
     .AllowAnyHeader()

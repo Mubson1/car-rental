@@ -11,8 +11,7 @@ const AboutSection = ({ aboutClass }) => {
         aboutClass === "aboutPage"
           ? { marginTop: "0px" }
           : { marginTop: "280px" }
-      }
-    >
+      }>
       <Container>
         <Row>
           <Col lg="6" md="6">
@@ -20,35 +19,36 @@ const AboutSection = ({ aboutClass }) => {
               <h4 className="section__subtitle">About Us</h4>
               <h2 className="section__title">Welcome to car rent service</h2>
               <p className="section__description">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Voluptatum blanditiis esse accusantium dignissimos labore
-                laborum. Veniam, corporis mollitia temporibus, in quaerat vero
-                deleniti amet dolorem repudiandae, pariatur nam dolore! Impedit
-                neque sit ad temporibus quam similique dolor ipsam praesentium
-                sunt.
+                Welcome to our car rental service! We are a team of dedicated
+                professionals who are passionate about providing our customers
+                with the best possible car rental experience. With years of
+                experience in the industry, we understand the importance of
+                convenience, affordability, and excellent customer service. Our
+                fleet of well-maintained vehicles caters to all your
+                transportation needs, whether you need a car for a family
+                vacation or a business trip. Our goal is to ensure your complete
+                satisfaction by delivering reliable, safe, and comfortable
+                vehicles that meet your expectations. Thank you for choosing us
+                for your car rental needs, and we look forward to serving you.
               </p>
 
               <div className="about__section-item d-flex align-items-center">
                 <p className="section__description d-flex align-items-center gap-2">
-                  <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                  amet.
+                  <i class="ri-checkbox-circle-line"></i> Quick rental service
                 </p>
 
                 <p className="section__description d-flex align-items-center gap-2">
-                  <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                  amet.
+                  <i class="ri-checkbox-circle-line"></i> Multi-city service
                 </p>
               </div>
 
               <div className="about__section-item d-flex align-items-center">
                 <p className="section__description d-flex align-items-center gap-2">
-                  <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                  amet.
+                  <i class="ri-checkbox-circle-line"></i> Best and affordable
                 </p>
 
                 <p className="section__description d-flex align-items-center gap-2">
-                  <i class="ri-checkbox-circle-line"></i> Lorem ipsum dolor sit
-                  amet.
+                  <i class="ri-checkbox-circle-line"></i> Get best deals and
                 </p>
               </div>
             </div>

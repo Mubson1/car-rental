@@ -10,20 +10,25 @@ const navLinks = [
     display: "Cars",
   },
   {
-    path: "/staffs",
-    icon: "ri-taxi-line",
-    display: "Staffs",
+    path: "/users",
+    icon: "ri-user-2-fill",
+    display: "Users",
   },
   {
     path: "/bookings",
-    icon: "ri-taxi-line",
-    display: "Booking",
+    icon: "ri-booklet-line",
+    display: "Bookings",
   },
-  // {
-  //   path: "/sell-car",
-  //   icon: "ri-shopping-bag-line",
-  //   display: "Sell Cars",
-  // },
+  {
+    path: "/payments",
+    icon: "ri-money-dollar-circle-line",
+    display: "Payments",
+  },
+  {
+    path: "/damage-request",
+    icon: "ri-hammer-line",
+    display: "Damage Requests",
+  },
   {
     path: "/settings",
     icon: "ri-settings-2-line",
