@@ -20,6 +20,7 @@ import {
   useGetNotFrequentlyRentedCars,
   useGetRegularCustomers,
 } from "../helper/useStats";
+import useToken from "../axios/useToken";
 
 const carObj = {
   title: "Total Cars",
@@ -46,6 +47,7 @@ const distanceObj = {
 };
 
 const Dashboard = () => {
+  const [token, setToken] = useToken();
   const navigate = useNavigate();
   const { data: allUser, isLoading: userLoading } = useGetAllUser();
   const { data: allCars, isLoading: carLoading } = useGetCars();
@@ -68,7 +70,6 @@ const Dashboard = () => {
   const notRentedData = notFrequentlyRented?.data?.notRentedCars?.slice(0, 3);
   const activeData = regularCustomers?.data?.regularCustomers?.slice(0, 3);
   const inactiveData = inactiveCustomers?.data?.inactiveCustomers?.slice(0, 3);
-  console.log(rentedData, notRentedData, activeData, inactiveData);
   return (
     <div className="dashboard">
       <div className="dashboard__wrapper">
@@ -87,7 +88,9 @@ const Dashboard = () => {
               title: "Total Users",
               totalNumber: allUser?.data?.users?.length || 0,
               icon: "ri-user-line",
-              onClick: () => navigate("/users"),
+              onClick: () => {
+                JSON.parse(token)?.user?.role === "Admin" && navigate("/users");
+              },
               isLoading: userLoading,
             }}
           />

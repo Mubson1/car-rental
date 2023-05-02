@@ -19,12 +19,12 @@ const Router = () => {
   const ProtectedRoute = ({ children }) => {
     const [token, setToken] = useToken();
 
-    let admin = false;
-    if (JSON.parse(token)?.user?.role === "Admin") {
-      admin = true;
+    let authorized = false;
+    if (JSON.parse(token)?.user?.role === "Admin" || "Staff") {
+      authorized = true;
     }
 
-    if (!admin) return <Navigate to="/login" />;
+    if (!authorized) return <Navigate to="/login" />;
 
     return children;
   };
