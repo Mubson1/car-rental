@@ -98,7 +98,7 @@ const Bookings = () => {
                 Car Detail
               </span>
 
-              <div className="flex ">
+              <div className="flex">
                 <img
                   src={selectedRent?.car?.image}
                   style={{

@@ -125,3 +125,15 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.dashboardListContainer {
+  -webkit-box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 1px 2px 3px 1px rgba(200, 200, 200, 0.5);
+  padding: 8px 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dashboardListContainer:hover {
+  background-color: #b7ffe913;
+}

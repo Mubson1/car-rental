@@ -10,7 +10,7 @@ async function getCarDetail({ queryKey }) {
 }
 
 async function postRentRequest(payload) {
-  return axios.post("/api/Customer/make_request", payload);
+  return axios.post("/api/Customer/post_request", payload);
 }
 
 export const useGetCarDetail = (carId) =>

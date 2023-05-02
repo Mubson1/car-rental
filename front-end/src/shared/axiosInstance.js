@@ -2,7 +2,6 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://localhost:7218",
-  timeout: 1000,
 });
 
 // axiosInstance.interceptors.request.use(

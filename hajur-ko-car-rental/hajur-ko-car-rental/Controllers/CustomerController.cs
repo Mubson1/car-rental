@@ -17,7 +17,7 @@ using hajur_ko_car_rental.Models.Static;
 namespace hajur_ko_car_rental.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase

@@ -19,7 +19,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         [Route("add_new_car")]
         public async Task<IActionResult> AddCar([FromForm] AddCarsDTO car)
@@ -96,7 +96,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
 
-        [HttpPatch]
+        [HttpPut]
         //[Authorize(Roles ="Admin")]
         [Route("update_car_details")]
         public async Task<IActionResult> UpdateCar([FromForm] UpdateCarDTO car)
@@ -160,7 +160,7 @@ namespace hajur_ko_car_rental.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpDelete("remove_car")]
         public async Task<IActionResult> RemoveCar(String id)
         {

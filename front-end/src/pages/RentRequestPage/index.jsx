@@ -14,10 +14,15 @@ import {
   TextAreaStyled,
 } from "./Component";
 import { Card } from "react-bootstrap";
-import { useGetRentalHistory } from "./api";
+import {
+  useCancelRentRequest,
+  useGetRentalHistory,
+  usePostDamageRequest,
+} from "./api";
 import useToken from "../../helper/useToken";
 import { SpinnerComponent } from "../../components/UI/Spinner";
 import axios from "axios";
+import "../../styles/common-section.css";
 
 // const request = [
 //   {
@@ -44,12 +49,16 @@ import axios from "axios";
 //   },
 // ];
 
-const MyRequest = async () => {
+const MyRequest = () => {
   const [token, setToken] = useToken();
 
   const { data: request, isLoading: requestLoading } = useGetRentalHistory(
-    JSON.parse(token)?.user?.id.toString()
+    JSON.parse(token)?.user?.id
   );
+  const { mutate: requestDamage, isLoading: requestingDamage } =
+    usePostDamageRequest();
+  const { mutate: cancelRent, isLoading: cancelRentLoading } =
+    useCancelRentRequest();
 
   const [mainRequest, setMainRequest] = useState([]);
   const [showDamageModal, setShowDamageModal] = useState(false);
@@ -64,8 +73,8 @@ const MyRequest = async () => {
   };
 
   useEffect(() => {
-    if (request) {
-      setMainRequest(request[0]);
+    if (request?.data?.history) {
+      setMainRequest(request?.data?.history[0]);
     }
   }, [request]);
 
@@ -77,15 +86,16 @@ const MyRequest = async () => {
         <CommonSection title="My Requests" />
         <Wrapper>
           <div className="grid grid-four-column">
-            {request?.map((curElm, index) => {
+            {request?.data?.history?.map((curElm, index) => {
               return (
                 <Card
                   key={index}
-                  className={[
-                    "w-full h-4 px-4 py-1 mb-3 grid-content",
-                    curElm?.Id === mainRequest?.Id && "bg-info",
-                  ]}
-                  style={{ cursor: "pointer" }}
+                  className={
+                    curElm?.id === mainRequest?.id
+                      ? "bg-info formContainer"
+                      : "formContainer"
+                  }
+                  style={{ cursor: "pointer", marginBottom: 12 }}
                   onClick={() => setMainRequest(curElm)}>
                   <div
                     style={{
@@ -93,11 +103,29 @@ const MyRequest = async () => {
                       justifyContent: "space-between",
                       alignItems: "center",
                     }}>
-                    <div>
-                      <h3>{curElm?.CarId}</h3>
-                      <span>
-                        {curElm?.StartDate} - {curElm?.EndDate}
-                      </span>
+                    <div className="d-flex" style={{ alignItems: "center" }}>
+                      <div>
+                        <img
+                          src={curElm?.car?.image}
+                          alt=""
+                          style={{
+                            width: 100,
+                            height: 100,
+                            marginRight: 20,
+                            borderRadius: 100,
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <h4 className="text-lg font-bold text-black">
+                          {curElm?.car?.name}
+                        </h4>
+                        <span className="text-secondary text-xs">
+                          {curElm?.startDate} - {curElm?.endDate}
+                        </span>
+                      </div>
                     </div>
                     <i
                       class="ri-arrow-drop-right-line"
@@ -110,10 +138,13 @@ const MyRequest = async () => {
           </div>
 
           <div className="main-screen">
-            <Card className="w-full px-4 py-4">
+            <Card
+              className="w-full px-4 py-4 formContainer"
+              style={{ height: 420 }}>
               <div className="d-flex align-items-center">
                 <img
-                  src="https://hips.hearstapps.com/hmg-prod/images/2023-mclaren-artura-101-1655218102.jpg?crop=1.00xw:0.847xh;0,0.153xh&resize=1200:*"
+                  src={mainRequest?.car?.image}
+                  alt="car"
                   style={{
                     height: 120,
                     width: 120,
@@ -123,11 +154,11 @@ const MyRequest = async () => {
                   }}
                 />
                 <div>
-                  <h1>Car Name</h1>
-                  <span>{mainRequest?.CarId}</span>
+                  <h1>{mainRequest?.car?.name}</h1>
+                  <span>{mainRequest?.car?.brand}</span>
                   <div>
                     <span style={{ fontWeight: "300" }}>
-                      Status: {mainRequest?.RequestStatus}
+                      Status: {mainRequest?.requestStatus}
                     </span>
                   </div>
                 </div>
@@ -137,11 +168,11 @@ const MyRequest = async () => {
                   Request Date
                 </span>
                 <div className="d-flex flex-column mt-2">
-                  <span style={{ fontWeight: "300" }}>
-                    Start Date: {mainRequest?.StartDate}
+                  <span style={{ fontWeight: "400" }}>
+                    Start Date: {mainRequest?.startDate}
                   </span>
-                  <span style={{ fontWeight: "300" }}>
-                    End Date: {mainRequest?.EndDate}
+                  <span style={{ fontWeight: "400" }}>
+                    End Date: {mainRequest?.endDate}
                   </span>
                 </div>
               </div>
@@ -151,7 +182,7 @@ const MyRequest = async () => {
                     Total Charge
                   </span>
                   <span style={{ fontSize: 18, fontWeight: "600" }}>
-                    {mainRequest?.TotalCharge}
+                    {mainRequest?.totalCharge}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between">
@@ -159,22 +190,27 @@ const MyRequest = async () => {
                     Approved By
                   </span>
                   <span style={{ fontSize: 18, fontWeight: "600" }}>
-                    {mainRequest?.CheckedBy || "N/A"}
+                    {mainRequest?.authorizedBy?.name || "N/A"}
                   </span>
                 </div>
               </div>
               <div className="mt-4">
-                <button
-                  className="bg-danger py-2 px-4"
-                  style={{
-                    border: "none",
-                    borderRadius: 20,
-                    color: "white",
-                    fontWeight: "600",
-                  }}>
-                  Cancel Request
-                </button>
-                {mainRequest?.CheckedBy && (
+                {(mainRequest?.requestStatus === "Approved" ||
+                  mainRequest?.requestStatus === "Pending") && (
+                  <button
+                    onClick={() => cancelRent(mainRequest?.id)}
+                    className="bg-danger py-2 px-4"
+                    style={{
+                      border: "none",
+                      borderRadius: 20,
+                      color: "white",
+                      fontWeight: "600",
+                      marginRight: 16,
+                    }}>
+                    {cancelRentLoading ? "Loading..." : "Cancel Request"}
+                  </button>
+                )}
+                {mainRequest?.requestStatus === "Paid" && (
                   <button
                     onClick={handleModalOpen}
                     className="bg-warning py-2 px-4"
@@ -183,7 +219,6 @@ const MyRequest = async () => {
                       borderRadius: 20,
                       color: "white",
                       fontWeight: "600",
-                      marginLeft: 16,
                     }}>
                     Damage Request
                   </button>
@@ -205,6 +240,30 @@ const MyRequest = async () => {
                 value={damageDesc}
               />
             </TextAreaContainer>
+            <button
+              onClick={() =>
+                requestDamage(
+                  {
+                    damageDescription: damageDesc,
+                    rentalId: mainRequest?.id,
+                  },
+                  {
+                    onSuccess: () => {
+                      setDamageDesc("");
+                      setShowDamageModal(false);
+                    },
+                  }
+                )
+              }
+              className="bg-primary py-2 px-4"
+              style={{
+                border: "none",
+                borderRadius: 20,
+                color: "white",
+                fontWeight: "600",
+              }}>
+              {requestLoading ? "Loading..." : "Confirm"}
+            </button>
           </ModalContent>
         </Modal>
       </ModalContainer>

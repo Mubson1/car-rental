@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hajur_ko_car_rental.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CarRentalController : ControllerBase

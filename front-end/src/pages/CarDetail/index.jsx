@@ -23,6 +23,16 @@ import {
   ModalContent,
   ModalTitle,
 } from "./Component";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import FormInput from "../../components/UI/FormInput";
+
+const validationSchema = Yup.object({
+  startDate: Yup.date().required("Required"),
+  endDate: Yup.date()
+    .required("Required")
+    .min(Yup.ref("startDate"), "End date must be after start date"),
+});
 
 const CarDetails = () => {
   const navigate = useNavigate();
@@ -48,22 +58,28 @@ const CarDetails = () => {
     return stars;
   };
 
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const bookingDetail = { startDate: "", endDate: "" };
+
   const [showModal, setShowModal] = useState(false);
   const [hasDoc, setHasDoc] = useState(true);
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-
+  const handleSubmit = (info) => {
     if (JSON.parse(token)) {
       if (JSON.parse(token).user?.hasDocument) {
-        // makeRequest({
-        //   startDate: startDate,
-        //   endDate: endDate,
-        //   customerId: JSON.parse(token)?.user?.id,
-        //   carId: carId,
-        // });
+        makeRequest(
+          {
+            startDate: info.startDate,
+            endDate: info.endDate,
+            customerId: JSON.parse(token)?.user?.id,
+            carId: carId,
+          },
+          {
+            onSuccess: () => {
+              setShowModal(false);
+              setHasDoc(true);
+            },
+          }
+        );
       } else {
         setShowModal(true);
         setHasDoc(false);
@@ -154,28 +170,52 @@ const CarDetails = () => {
             <Col lg="7" className="mt-5">
               <div className="booking-info mt-5">
                 <h5 className="mb-4 fw-bold ">Booking Information</h5>
-                <Form onSubmit={submitHandler}>
-                  <FormGroup className="booking__form d-inline-block me-4 mb-4">
-                    <span style={{ fontWeight: "600" }}>Start Date</span>
-                    <input
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      type="date"
-                      placeholder="Start Date"
-                      className="mt-2"
-                    />
-                  </FormGroup>
-                  <FormGroup className="booking__form d-inline-block me-4 mb-4">
-                    <span style={{ fontWeight: "600" }}>End Date</span>
-                    <input
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      type="date"
-                      placeholder="End Date"
-                      className="mt-2"
-                    />
-                  </FormGroup>
-                </Form>
+                <Formik
+                  initialValues={bookingDetail}
+                  validationSchema={validationSchema}
+                  onSubmit={(values, formikActions) => {
+                    handleSubmit(values);
+                    formikActions.resetForm();
+                    formikActions.setSubmitting(false);
+                  }}>
+                  {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                  }) => {
+                    const { endDate, startDate } = values;
+                    return (
+                      <>
+                        <FormInput
+                          value={startDate}
+                          error={touched.startDate && errors.startDate}
+                          onBlur={handleBlur("startDate")}
+                          label="From"
+                          placeholder="Enter the booking start date"
+                          onChange={handleChange("startDate")}
+                          type="date"
+                        />
+                        <FormInput
+                          value={endDate}
+                          error={touched.endDate && errors.endDate}
+                          onBlur={handleBlur("endDate")}
+                          label="Till"
+                          placeholder="Enter the booking end date"
+                          onChange={handleChange("endDate")}
+                          type="date"
+                        />
+                        <div className="payment text-start mt-5">
+                          <button type="submit" onClick={handleSubmit}>
+                            Reserve Now
+                          </button>
+                        </div>
+                      </>
+                    );
+                  }}
+                </Formik>
               </div>
             </Col>
 
@@ -208,11 +248,6 @@ const CarDetails = () => {
                   </label>
 
                   <img src={paypal} alt="" />
-                </div>
-                <div className="payment text-end mt-5">
-                  <button type="button" onClick={submitHandler}>
-                    Reserve Now
-                  </button>
                 </div>
               </div>
             </Col>

@@ -1,16 +1,29 @@
 import React from "react";
+import { formatDate } from "../../helper/formatDate";
 
 const RecommendCarCard = (props) => {
-  const { carName, retweet, imgUrl, rentPrice, percentage } = props.item;
+  const {
+    carName,
+    status,
+    imgUrl,
+    rentPrice,
+    percentage,
+    start,
+    end,
+    onClick,
+  } = props.item;
   return (
-    <div className="recommend__car-card">
-      <div className="recommend__car-top">
+    <div className="recommend__car-card" onClick={onClick}>
+      <div className="recommend__car-top flex justify-between">
         <h5>
           <span>
             <i class="ri-refresh-line"></i>
           </span>
-          {percentage}% Recommended
+          {percentage}% Offer
         </h5>
+        <span className="mt-1">
+          {start} - {end}
+        </span>
       </div>
 
       <div className="recommend__car-img">
@@ -22,7 +35,7 @@ const RecommendCarCard = (props) => {
           <div className="recommend__icons">
             <p>
               <i class="ri-repeat-line"></i>
-              {retweet}k
+              {status}
             </p>
             <p>
               <i class="ri-settings-2-line"></i>
@@ -31,7 +44,7 @@ const RecommendCarCard = (props) => {
               <i class="ri-timer-flash-line"></i>
             </p>
           </div>
-          <span>${rentPrice}/h</span>
+          <span>Rs.{rentPrice}/d</span>
         </div>
       </div>
     </div>

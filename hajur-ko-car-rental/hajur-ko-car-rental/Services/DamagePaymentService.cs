@@ -61,7 +61,7 @@ namespace hajur_ko_car_rental.Services
 
         }
 
-        public async Task<bool> ConfirmPayment(Guid paymentId, string username)
+        public async Task<bool> ConfirmPayment(Guid paymentId, Guid userId)
         {
             var payment = await _dbContext.DamagePayment.FindAsync(paymentId);
 
@@ -90,7 +90,7 @@ namespace hajur_ko_car_rental.Services
             //var username = User.Identity.Name;
 
             payment.PaymentStatus = PaymentStatus.Paid;
-            payment.CheckedBy = _dbContext.ApplicationUsers.Where(u => username == u.UserName).First().Id;
+            payment.CheckedBy = _dbContext.ApplicationUsers.Where(u => userId.ToString() == u.Id).First().Id;
             dmgRecord.RequestStatus = RequestStatus.Paid;
             payment.PaymentDate = DateTime.UtcNow;
             payment.PaymentType = PaymentType.Offline;
@@ -180,7 +180,7 @@ namespace hajur_ko_car_rental.Services
             _dbContext.DamagePayment.Remove(damageRecords);
             _dbContext.SaveChanges();
 
-            //return damageRecords;
+            //return damagerecords;
         }
 
 

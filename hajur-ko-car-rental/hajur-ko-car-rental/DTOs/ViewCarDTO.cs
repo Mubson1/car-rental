@@ -13,5 +13,6 @@
         public string FuelType { get; set; }
         public string SafetyRating { get; set; }
         public string ImageUrl { get; set; }
+
     }
 }

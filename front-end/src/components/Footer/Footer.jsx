@@ -43,10 +43,11 @@ const Footer = () => {
               </h1>
             </div>
             <p className="footer__logo-content">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Consequuntur, distinctio, itaque reiciendis ab cupiditate harum ex
-              quam veniam, omnis expedita animi quibusdam obcaecati mollitia?
-              Delectus et ad illo recusandae temporibus?
+              Our fleet of well-maintained vehicles caters to all your
+              transportation needs, whether you need a car for a family vacation
+              or a business trip. Our goal is to ensure your complete
+              satisfaction by delivering reliable, safe, and comfortable
+              vehicles that meet your expectations.
             </p>
           </Col>
 

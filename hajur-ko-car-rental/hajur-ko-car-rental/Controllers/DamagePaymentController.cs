@@ -99,12 +99,11 @@ namespace hajur_ko_car_rental.Controllers
 
         [HttpPut("confirm_damage_payment")]
         //[Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> ConfirmPayment(Guid paymentId)
+        public async Task<IActionResult> ConfirmPayment(Guid paymentId, Guid userId)
         {
             try
             {
-                var loggedInUsername = User.Identity.Name!;
-                var damageRecords = await _damagePaymentService.ConfirmPayment(paymentId, loggedInUsername);
+                var damageRecords = await _damagePaymentService.ConfirmPayment(paymentId, userId);
                 return Ok(new
                 {
                     message = "success",

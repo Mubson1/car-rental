@@ -28,21 +28,23 @@ const About = () => {
             <Col lg="6" md="6" sm="12">
               <div className="about__page-content">
                 <h2 className="section__title">
-                  We Are Committed To Provide Safe Ride Solutions
+                  We Are Committed To Provide Best Services For Your Journey
                 </h2>
 
                 <p className="section__description">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eveniet veniam assumenda aperiam accusantium ex autem
-                  perferendis repellendus nostrum delectus. Nemo et dolore est
-                  tempore rem minima adipisci magni dolorum ipsam.
+                  Our mission is to provide a hassle-free and convenient car
+                  rental experience for our customers. We understand that
+                  renting a car can be stressful and time-consuming, which is
+                  why we strive to make the process as simple and seamless as
+                  possible.
                 </p>
-
                 <p className="section__description">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eveniet veniam assumenda aperiam accusantium ex autem
-                  perferendis repellendus nostrum delectus. Nemo et dolore est
-                  tempore rem minima adipisci magni dolorum ipsam.
+                  With a wide range of vehicles available, including compact
+                  cars, luxury sedans, SUVs, and more, we have the perfect
+                  rental car for every occasion. Whether you're traveling for
+                  business or pleasure, our fleet of well-maintained vehicles
+                  will ensure that you get where you need to go safely and
+                  comfortably.
                 </p>
 
                 <div className=" d-flex align-items-center gap-3 mt-4">
@@ -52,7 +54,7 @@ const About = () => {
 
                   <div>
                     <h6 className="section__subtitle">Need Any Help?</h6>
-                    <h4>+00123456789</h4>
+                    <h4>+977-9841000000</h4>
                   </div>
                 </div>
               </div>

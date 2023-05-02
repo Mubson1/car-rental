@@ -11,6 +11,8 @@ import Contact from "../pages/Contact";
 import Login from "../pages/AuthPages";
 import RentRequestPage from "../pages/RentRequestPage";
 import PopupModal from "../components/UI/UploadDocModal";
+import Profile from "../pages/Profile";
+import Notifications from "../pages/Notifications";
 
 const Routers = () => {
   return (
@@ -25,6 +27,8 @@ const Routers = () => {
       <Route path="/blogs/:slug" element={<BlogDetails />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/my-requests" element={<RentRequestPage />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/notifications" element={<Notifications />} />
       <Route path="/upload-doc" element={<PopupModal />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

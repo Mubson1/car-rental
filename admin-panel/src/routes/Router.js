@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import Dashboard from "../pages/Dashboard";
 import Bookings from "../pages/Bookings";
-import CarsDetail from "../pages/CarsDetail";
+import CarDetails from "../pages/CarsDetail";
 import Settings from "../pages/Settings";
 import Cars from "../pages/Cars";
 import Login from "../pages/login/Login";
@@ -12,6 +12,8 @@ import Damages from "../pages/Damages";
 import User from "../pages/Users";
 import UserForm from "../pages/UserForm";
 import Payments from "../pages/Payments";
+import UserDetail from "../pages/UserDetail";
+import CarForm from "../pages/CarForm";
 
 const Router = () => {
   const ProtectedRoute = ({ children }) => {
@@ -58,6 +60,22 @@ const Router = () => {
         }
       />
       <Route
+        path="/cars/new"
+        element={
+          <ProtectedRoute>
+            <CarForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cars/edit/:carId"
+        element={
+          <ProtectedRoute>
+            <CarForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/users"
         element={
           <ProtectedRoute>
@@ -80,6 +98,15 @@ const Router = () => {
         element={
           <ProtectedRoute>
             <UserForm />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users/detail/:userId"
+        element={
+          <ProtectedRoute>
+            <UserDetail />
           </ProtectedRoute>
         }
       />
@@ -109,10 +136,10 @@ const Router = () => {
         }
       />
       <Route
-        path="/cars/:id"
+        path="/cars/:carId"
         element={
           <ProtectedRoute>
-            <CarsDetail />
+            <CarDetails />
           </ProtectedRoute>
         }
       />

@@ -310,7 +310,7 @@ const Settings = () => {
                       fontWeight: "600",
                       marginTop: 24,
                     }}>
-                    Upload
+                    {uploadingDocument ? "Uploading..." : "Upload"}
                   </button>
                 </>
               )}

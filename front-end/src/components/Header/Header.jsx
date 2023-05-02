@@ -122,11 +122,16 @@ const Header = () => {
                         <span
                           onClick={() => navigate("my-requests")}
                           style={{ cursor: "pointer", marginBottom: 6 }}>
-                          My Rent Requests
+                          Rent Requests
+                        </span>
+                        <span
+                          onClick={() => navigate("notifications")}
+                          style={{ cursor: "pointer", marginBottom: 6 }}>
+                          Notifications
                         </span>
                         <span
                           onClick={() => navigate("profile")}
-                          style={{ cursor: "pointer" }}>
+                          style={{ cursor: "pointer", marginBottom: 6 }}>
                           View Profile
                         </span>
                         <span

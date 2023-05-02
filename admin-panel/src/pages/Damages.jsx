@@ -24,8 +24,6 @@ const Damages = () => {
   const { mutate: applyPayment, isLoading: applyingPayment } =
     usePostDamagePayment();
 
-  console.log(amount);
-
   const toggleModal = () => {
     setShowModal(!showModal);
   };
@@ -40,57 +38,53 @@ const Damages = () => {
 
   return (
     <div className="bookings">
-      <div>
-        <button onClick={toggleModal}>Open Modal</button>
-
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal text-white w-1/3">
-              <div className="modal-header">
-                <h2 className="text-2xl font-bold">Apply Damage Payment</h2>
-                <button className="close-button" onClick={toggleModal}>
-                  &times;
-                </button>
-              </div>
-              <div className="modal-content">
-                <input
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  type="number"
-                  placeholder="Damage Repair Amount"
-                  className="w-full bg-blue-950 h-14 px-3 py-1 text-lg mb-4 mt-5 rounded-lg"
-                  min={0}></input>
-                <button
-                  onClick={() =>
-                    applyPayment(
-                      {
-                        amount: parseFloat(amount),
-                        damageRecordId: selectedRequest?.id,
-                        checkedBy: JSON.parse(token)?.user?.id,
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal text-white w-1/3">
+            <div className="modal-header">
+              <h2 className="text-2xl font-bold">Apply Damage Payment</h2>
+              <button className="close-button" onClick={toggleModal}>
+                &times;
+              </button>
+            </div>
+            <div className="modal-content">
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                type="number"
+                placeholder="Damage Repair Amount"
+                className="w-full bg-blue-950 h-14 px-3 py-1 text-lg mb-4 mt-5 rounded-lg"
+                min={0}></input>
+              <button
+                onClick={() =>
+                  applyPayment(
+                    {
+                      amount: parseFloat(amount),
+                      damageRecordId: selectedRequest?.id,
+                      checkedBy: JSON.parse(token)?.user?.id,
+                    },
+                    {
+                      onSuccess: () => {
+                        setShowModal(false);
+                        setAmount(0);
                       },
-                      {
-                        onSuccess: () => {
-                          setShowModal(false);
-                          setAmount(0);
-                        },
-                      }
-                    )
-                  }
-                  disabled={applyingPayment}
-                  className="bg-slate-500 py-2 px-4"
-                  style={{
-                    border: "none",
-                    borderRadius: 20,
-                    color: "white",
-                    fontWeight: "600",
-                  }}>
-                  {applyingPayment ? "Loading..." : "Apply"}
-                </button>
-              </div>
+                    }
+                  )
+                }
+                disabled={applyingPayment}
+                className="bg-slate-500 py-2 px-4"
+                style={{
+                  border: "none",
+                  borderRadius: 20,
+                  color: "white",
+                  fontWeight: "600",
+                }}>
+                {applyingPayment ? "Loading..." : "Apply"}
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       <div className="w-full flex justify-between align-middle">
         <h2 className="booking__title">Damage Requests</h2>
       </div>

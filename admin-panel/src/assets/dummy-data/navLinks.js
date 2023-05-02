@@ -11,22 +11,22 @@ const navLinks = [
   },
   {
     path: "/users",
-    icon: "ri-taxi-line",
+    icon: "ri-user-2-fill",
     display: "Users",
   },
   {
     path: "/bookings",
-    icon: "ri-taxi-line",
+    icon: "ri-booklet-line",
     display: "Bookings",
   },
   {
     path: "/payments",
-    icon: "ri-taxi-line",
+    icon: "ri-money-dollar-circle-line",
     display: "Payments",
   },
   {
     path: "/damage-request",
-    icon: "ri-shopping-bag-line",
+    icon: "ri-hammer-line",
     display: "Damage Requests",
   },
   {

@@ -41,6 +41,10 @@ async function uploadDocument(payload) {
   return axios.post("/api/UserAuth/upload_document", payload);
 }
 
+async function getRentTransactions(payload) {
+  return axios.post("/api/Sales/rent_paid", payload);
+}
+
 export const useGetAllUser = () => useQuery(["user-list"], getAllUser);
 
 export const useGetUserById = (userId) =>
@@ -228,3 +232,8 @@ export const useUploadDocument = () => {
     },
   });
 };
+
+export const useGetRentTransactions = () =>
+  useMutation({
+    mutationFn: getRentTransactions,
+  });

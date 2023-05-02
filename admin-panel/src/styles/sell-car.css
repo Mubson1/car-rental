@@ -44,7 +44,7 @@
 }
 
 .sell__car-title {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   color: #fff;
   font-weight: 500;
   font-size: 1.5rem;
@@ -61,9 +61,6 @@
   padding: 20px;
   border-radius: 5px;
   background: var(--primary-color);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  column-gap: 2rem;
   margin-bottom: 2rem;
 }
 

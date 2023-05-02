@@ -14,11 +14,19 @@ async function postLoginCustomer(payload) {
 }
 
 async function uploadDocument(payload) {
-  return axios.post("/api/UserAuth/upload_doc", payload);
+  return axios.post("/api/UserAuth/upload_document", payload);
 }
 
 async function postLogout() {
   return axios.post("/api/UserAuth/logout");
+}
+
+async function changeMyPassword(payload) {
+  return axios.post("/api/UserAuth/change_password", payload);
+}
+
+async function getOffers() {
+  return axios.get("/api/SpecialOffer/get_offers");
 }
 
 export const usePostLoginCustomer = () => {
@@ -106,3 +114,32 @@ export const usePostLogout = () => {
     },
   });
 };
+
+export const useUpdateMyPassword = () => {
+  const queryClient = useQueryClient();
+
+  const { showToast } = useContext(ToastNotificationContext);
+
+  return useMutation({
+    mutationFn: changeMyPassword,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["logged-in-user"] });
+      showToast({
+        id: new Date().toDateString(),
+        title: "Password Change Success",
+        type: "success",
+        message: "Password has been successfully changed.",
+      });
+    },
+    onError: (error) => {
+      showToast({
+        id: new Date().toDateString(),
+        title: "Password Change Error!",
+        type: "danger",
+        message: error.message,
+      });
+    },
+  });
+};
+
+export const useGetOffers = () => useQuery(["offer-by-car"], getOffers);

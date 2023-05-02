@@ -128,7 +128,7 @@ var app = builder.Build();
 app.UseCors(builder =>
 {
     builder
-    .WithOrigins("https://localhost:3000", "https://localhost:3006")
+    .WithOrigins("https://localhost:3000", "https://localhost:3001")
     .SetIsOriginAllowedToAllowWildcardSubdomains()
     .AllowAnyMethod()
     .AllowAnyHeader()

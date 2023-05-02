@@ -77,7 +77,7 @@ const User = () => {
     } else {
       setSortedList(userData?.data?.users);
     }
-  });
+  }, [sortCategory, userData]);
 
   useEffect(() => {
     if (userData) {
@@ -150,7 +150,7 @@ const User = () => {
         </div>
       )}
       <div className="w-full flex justify-between align-middle">
-        <h2 className="booking__title">Staffs</h2>
+        <h2 className="booking__title">Users</h2>
         <button
           className="bg-blue-500 rounded-2xl px-4 h-12"
           onClick={() => navigate("/users/new")}>
@@ -203,12 +203,31 @@ const User = () => {
           <Card className="w-full px-4 py-4 text-white">
             <div className="d-flex align-items-center ">
               <div className="flex flex-col">
-                <span className="text-2xl font-bold">
-                  {selectedUser?.fullName}
-                </span>
-                <span className="capitalize font-semibold">
-                  {selectedUser?.username}
-                </span>
+                <div className="flex justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-2xl font-bold">
+                      {selectedUser?.fullName}
+                    </span>
+                    <span className="capitalize font-semibold">
+                      {selectedUser?.username}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() =>
+                      navigate(`/users/detail/${selectedUser?.id}`, {
+                        state: { userData: selectedUser },
+                      })
+                    }
+                    className="bg-amber-500 py-1 h-fit px-4"
+                    style={{
+                      border: "none",
+                      borderRadius: 20,
+                      color: "white",
+                      fontWeight: "600",
+                    }}>
+                    View Rental Transactions
+                  </button>{" "}
+                </div>
                 <div className="mt-4">
                   <span style={{ fontWeight: "300" }}>
                     ID: {selectedUser?.id}

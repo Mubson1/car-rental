@@ -16,7 +16,7 @@ namespace hajur_ko_car_rental.Controllers
             _publishOffers = publishOffers;
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         [Route("add_new_offer")]
         public async Task<IActionResult> AddOffer([FromBody] AddOfferDTO offer)
@@ -69,7 +69,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         [Route("view_cars")]
-        [Authorize(Roles = "Staff,Admin")]
+        //[Authorize(Roles = "Staff,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetCarList()
         {
@@ -99,7 +99,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
         [Route("get_all_offers")]
-        [Authorize(Roles = "Staff,Admin")]
+        //[Authorize(Roles = "Staff,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllOffers()
         {
@@ -135,11 +135,22 @@ namespace hajur_ko_car_rental.Controllers
             try
             {
                 var offerDetails = _publishOffers.GetOfferByCarId(Id);
-                return Ok(new
+
+                if (offerDetails == null) {
+                    return Ok(new
+                    {
+                        message = "success",
+                        offer = offerDetails
+                    });
+
+                } else
                 {
-                    message = "success",
-                    offer = offerDetails
-                });
+                    return Ok(new
+                    {
+                        message = "success",
+                        offer = offerDetails
+                    });
+                } 
 
             }
             catch (Exception ex)
@@ -154,8 +165,8 @@ namespace hajur_ko_car_rental.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,Staff")]
-        [HttpPatch]
+        //[Authorize(Roles = "Admin,Staff")]
+        [HttpPut]
         [Route("change_offer")]
         public async Task<IActionResult> UpdateOffer([FromBody] UpdateOfferDTO offer)
         {
@@ -180,7 +191,7 @@ namespace hajur_ko_car_rental.Controllers
         }
 
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         [HttpDelete("delete_offer")]
         public async Task<IActionResult> RemoveOffer(Guid id)
         {

@@ -30,7 +30,7 @@ const CarItem = (props) => {
               <i class="ri-settings-2-line"></i> {fuelType}
             </span>
             <span className=" d-flex align-items-center gap-1">
-              <i class="ri-timer-flash-line"></i> {mileage}
+              <i class="ri-timer-flash-line"></i> {mileage} kmpl
             </span>
           </div>
 
