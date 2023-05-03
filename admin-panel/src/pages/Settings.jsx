@@ -176,7 +176,7 @@ const Settings = () => {
                   <img
                     src={JSON.parse(token)?.user?.document}
                     alt=""
-                    className="h-fit object-contain"
+                    className="h-52 object-contain w-52"
                   />
                 ) : (
                   <label>N/A</label>

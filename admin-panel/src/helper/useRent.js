@@ -27,8 +27,6 @@ async function denyRequest(payload) {
   );
 }
 
-
-
 export const useGetRentHistory = (params) =>
   useQuery(["rent-history-list", params], getRentHistory);
 
@@ -91,5 +89,3 @@ export const useDenyRequest = () => {
     },
   });
 };
-
-
