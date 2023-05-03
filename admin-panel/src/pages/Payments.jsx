@@ -371,7 +371,9 @@ const Payments = () => {
                 <Card
                   key={index}
                   className={`px-4 pt-2 rounded-md w-full hover:bg-slate-400 transition-colors ease-in-out duration-300 mb-4
-                ${curElm?.id === selectedPayment?.id && "bg-blue-950 "}`}
+                  ${
+                    curElm?.id === selectedDamagePayment?.id && "bg-blue-950 "
+                  }`}
                   style={{ cursor: "pointer" }}
                   onClick={() => setSelectedDamagePayment(curElm)}>
                   <div

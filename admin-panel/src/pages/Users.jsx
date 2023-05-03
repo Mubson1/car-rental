@@ -93,7 +93,7 @@ const User = () => {
         <div className="modal-overlay">
           <div className="modal text-white w-1/3">
             <div className="modal-header">
-              <h2 className="text-2xl font-bold">Apply Damage Payment</h2>
+              <h2 className="text-2xl font-bold">Change User Password</h2>
               <button className="close-button" onClick={toggleModal}>
                 &times;
               </button>

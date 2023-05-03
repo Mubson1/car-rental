@@ -257,7 +257,7 @@ const CarDetails = () => {
       <ModalContainer visible={showModal}>
         <Modal>
           <CloseButton onClick={() => setShowModal(false)}>&times;</CloseButton>
-          <ModalTitle>Cannot Reserve In Guest Mode</ModalTitle>
+          <ModalTitle>You Need To Be Registered</ModalTitle>
           <ModalContent>
             <div>
               {!JSON.parse(token) && (
@@ -274,24 +274,22 @@ const CarDetails = () => {
                       borderRadius: 20,
                       color: "white",
                       fontWeight: "600",
-                      marginLeft: 16,
                     }}>
                     Click here to Login / Register
                   </button>
                 </div>
               )}
               {!hasDoc && (
-                <div>
+                <div className="d-flex flex-column">
                   <span>Looks like you have not uploaded your document.</span>
                   <button
                     onClick={() => navigate("/upload-doc", { showModal: true })}
-                    className="bg-primary py-2 px-4"
+                    className="bg-primary py-2 px-4 mt-2"
                     style={{
                       border: "none",
                       borderRadius: 20,
                       color: "white",
                       fontWeight: "600",
-                      marginLeft: 16,
                     }}>
                     Click here to Upload Document
                   </button>

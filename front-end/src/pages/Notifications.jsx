@@ -17,6 +17,14 @@ const Notifications = () => {
     <Helmet title="Notifications">
       <CommonSection title="Notifications" />
       <section style={{ paddingRight: 250, paddingLeft: 250 }}>
+        <span
+          style={{
+            color: "GrayText",
+            fontSize: 20,
+            fontWeight: "bold",
+          }}>
+          Notifications Lists
+        </span>
         {notifications?.data?.history?.length === 0 ? (
           <div
             style={{
